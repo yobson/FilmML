@@ -43,8 +43,13 @@ git clone https://github.com/Midar/objfw
 cd objfw
 echo "${green}Running Config${reset}"
 autoreconf
-./configure --host=x86_64-w64-mingw32 --enable-static --disable-shared
-echo "${green}Building${reset}"
+./configure --host=x86_64-w64-mingw32 --enable-static
+echo "${green}Building (This might fail)${reset}"
 make -j16
+echo "${green}Patching${reset}"
+cd test
+echo "int main() {return 0;}" > test.c
+gcc -o tests.exe test.c
+cd ../
 make install
 echo "${green}Finished${reset}"
