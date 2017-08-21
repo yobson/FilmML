@@ -13,7 +13,10 @@ Install [ObjFW](https://github.com/Midar/objfw)
 If you don't have the creators update, try the windows installation on the ObjFW site... I wish you luck, clang 4 is broken in msys2 but GCC seems to work fine!
 
 ## Compiling
-Simply run ```./build.sh```
+1. Make sure there is a ```bin``` folder in the root directory of the project
+2. Simply run ```./build.sh```
+
+On Windows, you will neee the ObjFW dlls (which are coppied into the bin folder on environment setup) so coppy this with the libfilmML.dll file to the c# project.
 
 ## Details about the project
 ### How it should work
@@ -27,3 +30,4 @@ The reason for this project is to build a ML film recomendation system that work
 - [ ] Build simple ML for machines
 - [ ] Interface with Elasticsearch
 - [ ] Build dll and c# library for ASP.net
+- [ ] Port to .net core as well
