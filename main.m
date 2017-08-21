@@ -16,7 +16,7 @@ EXPORT void __stdcall cleanUpUsers();
 EXPORT int __stdcall dllTest();
 EXPORT int __stdcall setFilmLearningMomentum(float f);
 EXPORT int __stdcall setUserLearningMomentum(float f);
-EXPORT int __stdcall setUserLearningRate(float f);
+EXPORT int __stdcall setFilmLearningRate(float f);
 EXPORT int __stdcall setUserLearningRate(float f);
 
 int nextFilmID;
@@ -84,13 +84,13 @@ EXPORT int __stdcall setUserLearningMomentum(float f) {
     return 0;
 }
 
-EXPORT void __stdcall setUserLearningRate(float f) {
-    if (f > 1) { return 1; }
-    userLearningRate = f;
-    return 0;
-}
-EXPORT void __stdcall setUserLearningRate(float f) {
+EXPORT int __stdcall setFilmLearningRate(float f) {
     if (f > 1) { return 1; }
     filmLearningRate = f;
+    return 0;
+}
+EXPORT int __stdcall setUserLearningRate(float f) {
+    if (f > 1) { return 1; }
+    userLearningRate = f;
     return 0;
 }
