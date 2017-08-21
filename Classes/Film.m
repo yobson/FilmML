@@ -16,7 +16,6 @@
     self = [super init];
     if (self) {
         mlData.tasteScores = calloc(numberOfFilmTypes, sizeof(float));
-        mlData.momentums = calloc(numberOfFilmTypes, sizeof(float));
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
         filmName = [[OFString alloc] init];
     }
@@ -56,14 +55,12 @@
 
 -(void) reset {
     memset(mlData.tasteScores, 0, sizeof(float) * numberOfFilmTypes);
-    memset(mlData.momentums  , 0, sizeof(float) * numberOfFilmTypes);
     memset(mlData.lastChanges, 0, sizeof(float) * numberOfFilmTypes);
     mlData.tasteScores[defaultType] = 1;
 }
 
 -(oneway void) release {
     free(mlData.tasteScores);
-    free(mlData.momentums);
     free(mlData.lastChanges);
     [super release];
 }

@@ -15,9 +15,7 @@
     self = [super init];
     if (self) {
         mlData.tasteScores = malloc(sizeof(float) * numberOfFilmTypes);
-        mlData.momentums = calloc(numberOfFilmTypes, sizeof(float));
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
-        memset(mlData.tasteScores, 1 / numberOfFilmTypes, sizeof(float) * numberOfFilmTypes);
         dateCreated = [OFDate date];
     }
     return self;
@@ -45,13 +43,11 @@
 
 -(void) reset {
     memset(mlData.tasteScores, 1 / numberOfFilmTypes, sizeof(float) * numberOfFilmTypes);
-    memset(mlData.momentums  , 0, sizeof(float) * numberOfFilmTypes);
     memset(mlData.lastChanges, 0, sizeof(float) * numberOfFilmTypes);
 }
 
 -(oneway void) release {
     free(mlData.tasteScores);
-    free(mlData.momentums);
     free(mlData.lastChanges);
     [super release];
 }
