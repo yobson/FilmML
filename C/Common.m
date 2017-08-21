@@ -35,4 +35,5 @@ void syncTastePreferences(float ***uTaste, float **fTaste, unsigned int userCoun
             uArray[i] += deltas[i] *=filmTastePower;
         }
     }
+    free(deltals);
 }
