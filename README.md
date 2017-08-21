@@ -16,7 +16,7 @@ If you don't have the creators update, try the windows installation on the ObjFW
 1. Make sure there is a ```bin``` folder in the root directory of the project
 2. Simply run ```./build.sh```
 
-On Windows, you will neee the ObjFW dlls (which are coppied into the bin folder on environment setup) so coppy this with the libfilmML.dll file to the c# project.
+On Windows, you will need the ObjFW dlls (which are coppied into the bin folder on environment setup) so copy the two dlls with the libfilmML.dll file to the C# project.
 
 ## Details about the project
 ### How it should work
