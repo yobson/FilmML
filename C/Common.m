@@ -32,7 +32,7 @@ void syncTastePreferences(float ***uTaste, float **fTaste, unsigned int userCoun
     for (unsigned int i = 0; i < userCount; i++) {
         uArray = *(*uTaste + i);
         for (int j = 0; j < numberOfFilmTypes; j++) {
-            uArray[i] += deltas[i] *=filmTastePower;
+            uArray[i] += deltas[i] * filmTastePower;
         }
     }
     free(deltals);
