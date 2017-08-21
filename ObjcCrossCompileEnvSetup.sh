@@ -47,9 +47,17 @@ autoreconf
 echo "${green}Building (This might fail)${reset}"
 make -j16
 echo "${green}Patching${reset}"
-cd test
+cd tests
 echo "int main() {return 0;}" > test.c
 gcc -o tests.exe test.c
 cd ../
 make install
+echo "${green}Moving Importent Files${reset}"
+cd ../
+if [ -f bin ]
+then
+mkdir bin
+fi
+cp objfw/src/runtime/libobjfw-rt.dll bin/.
+cp objfw/src/libobjfw.dll bin/.
 echo "${green}Finished${reset}"
