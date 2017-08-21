@@ -7,6 +7,7 @@
     OFString *filmName;
     FilmType defaultType;
     float *tasteArray;
+    float *momentum;
 }
 
 -(id) init;

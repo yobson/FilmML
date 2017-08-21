@@ -5,6 +5,11 @@
 ## Build generated
 build/
 DerivedData/
+*.dll
+wclang/
+objfw/
+*.a
+*.o
 
 ## Various settings
 *.pbxuser
@@ -22,17 +27,19 @@ xcuserdata/
 *.xccheckout
 *.xcscmblueprint
 
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
 ## Obj-C/Swift specific
 *.hmap
 *.ipa
 *.dSYM.zip
 *.dSYM
-*.dll
-wclang/
-objfw/
-build/
-*.a
-*.o
+
+.vscode/
 
 # CocoaPods
 #

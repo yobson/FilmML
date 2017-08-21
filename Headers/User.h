@@ -6,6 +6,7 @@
     unsigned int userID;
     float *tasteArray;
     OFDate *dateCreated;
+    float *momentum;
 }
 
 -(id) init;
