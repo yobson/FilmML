@@ -4,9 +4,8 @@
 
 @interface User : OFObject {
     unsigned int userID;
-    float *tasteArray;
     OFDate *dateCreated;
-    float *momentum;
+    MLType mlData;
 }
 
 -(id) init;
@@ -16,6 +15,8 @@
 -(unsigned int) getUserID;
 -(float) getTasteScoreFor:(FilmType) t;
 -(unsigned int) daysSinceInit;
+
+-(void) prepairSync;
 
 -(oneway void) release;
 

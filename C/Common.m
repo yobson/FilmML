@@ -1,6 +1,5 @@
 #import "../Headers/CommonTypes.h"
 #import <stdlib.h>
-#import <string.h>
 
 /*
 This file is where common static tasks (sometimes interclass) can implemented. It is also a place for
@@ -17,23 +16,22 @@ void updateTaste(float *f, FilmType t, float **array) {
     *array[t] = *f;
 }
 
-void syncTastePreferences(float ***uTaste, float **fTaste, unsigned int userCount) {
-    float *uArray, *deltas = malloc(sizeof(float) * numberOfFilmTypes);
-    memset(deltas, 0, sizeof(float) * numberOfFilmTypes);
+void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) {
+    float *uArray, *deltas = calloc(numberOfFilmTypes, sizeof(float));
     for (unsigned int i = 0; i < userCount; i++) {
-        uArray = *(*uTaste + i);
+        uArray = users[i]->tasteScores;
         for (int j = 0; j < numberOfFilmTypes; j++) {
-            deltas[j] += (uArray[j] - *fTaste[j]) / userCount;
+            deltas[j] += (uArray[j] - film->tasteScores[j]) / userCount;
         }
     }
     for (int i = 0; i < numberOfFilmTypes; i++) {
-        *fTaste[i] += deltas[i] * userTastePower;
+        film->tasteScores[i] += deltas[i] * filmLearningRate;
     }
     for (unsigned int i = 0; i < userCount; i++) {
-        uArray = *(*uTaste + i);
+        uArray = users[i]->tasteScores;
         for (int j = 0; j < numberOfFilmTypes; j++) {
-            uArray[i] += deltas[i] * filmTastePower;
+            uArray[i] += deltas[i] * userLearningRate;
         }
     }
-    free(deltals);
+    free(deltas);
 }

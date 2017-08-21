@@ -6,8 +6,7 @@
     unsigned int filmID;
     OFString *filmName;
     FilmType defaultType;
-    float *tasteArray;
-    float *momentum;
+    MLType mlData;
 }
 
 -(id) init;
@@ -20,6 +19,9 @@
 -(void) setTasteScoreOf:(FilmType) t to:(float) f;
 -(float) getDeafultType;
 -(float) getTasteScoreFor:(FilmType) t;
+
+-(void) prepairSync;
+-(void) reset;
 
 -(oneway void) release;
 
