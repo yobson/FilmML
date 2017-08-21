@@ -1,5 +1,6 @@
 #import "../Headers/CommonTypes.h"
 #import <stdlib.h>
+#import <string.h>
 
 /*
 This file is where common static tasks (sometimes interclass) can implemented. It is also a place for
@@ -26,7 +27,7 @@ void syncTastePreferences(float ***uTaste, float **fTaste, unsigned int userCoun
         }
     }
     for (int i = 0; i < numberOfFilmTypes; i++) {
-        *fTaste[i] += deltas[i] * userTastePower
+        *fTaste[i] += deltas[i] * userTastePower;
     }
     for (unsigned int i = 0; i < userCount; i++) {
         uArray = *(*uTaste + i);
