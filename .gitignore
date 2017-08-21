@@ -30,6 +30,7 @@ xcuserdata/
 *.dll
 wclang/
 objfw/
+build/
 *.a
 *.o
 

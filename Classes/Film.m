@@ -1,4 +1,5 @@
 #import "../Headers/Film.h"
+#import "../C/Common.m"
 #import <stdlib.h>
 
 /*
@@ -38,11 +39,12 @@
 
 -(void) setCustomID:(unsigned int) i { filmID = i; }
 -(void)  setDefaultType:(FilmType) t { defaultType = t; }
--(void) setPreferenceOf:(FilmType) t to:(float) f { tasteArray[t] = f; }
--(void) applyMultipleOf:(float) f to:(FilmType) t { tasteArray[t] *= f;}
 -(float) getDeafultType { return defaultType; }
 -(float) getLevelOf:(FilmType) t { return tasteArray[t]; }
--(float) getTastePreferenceFor:(FilmType) t { return tasteArray[t]; }
+-(float) getTasteScoreFor:(FilmType) t { return tasteArray[t]; }
+
+-(void) setTasteScoreOf:(FilmType) t to:(float) f { updateTaste(&f, t, &tasteArray); }
+
 -(oneway void) release {
     free(tasteArray);
     [super release];

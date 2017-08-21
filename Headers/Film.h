@@ -16,10 +16,9 @@
 
 -(void) setCustomID:(unsigned int) i;
 -(void) setDefaultType:(FilmType) t;
--(void) setPreferenceOf:(FilmType) t to:(float) f;
--(void) applyMultipleOf:(float) f to:(FilmType) t;
+-(void) setTasteScoreOf:(FilmType) t to:(float) f;
 -(float) getDeafultType;
--(float) getTastePreferenceFor:(FilmType) t;
+-(float) getTasteScoreFor:(FilmType) t;
 
 -(oneway void) release;
 
