@@ -13,7 +13,7 @@ Install [ObjFW](https://github.com/Midar/objfw)
 If you don't have the creators update, try the windows installation on the ObjFW site... I wish you luck, clang 4 is broken in msys2 but GCC seems to work fine!
 
 ## Compiling
-When I have actually built enough I will fill this bit in
+Simply run ```./build.sh```
 
 ## Details about the project
 ### How it should work
