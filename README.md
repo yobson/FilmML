@@ -27,7 +27,7 @@ The reason for this project is to build a ML film recomendation system that work
 
 ## Todo
 - [x] Build windows enviroment
-- [ ] Build simple ML for machines
+- [x] Build simple ML algorythm
 - [ ] Interface with Elasticsearch
 - [ ] Build dll and c# library for ASP.net
 - [ ] Port to .net core as well

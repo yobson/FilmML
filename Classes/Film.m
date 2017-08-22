@@ -52,7 +52,7 @@
 -(float) getTasteScoreFor:(FilmType) t { return mlData.tasteScores[t]; }
 -(void) setTasteScoreOf:(FilmType) t to:(float) f { updateTaste(&f, t, &mlData.tasteScores); }
 
--(void) registerVieweFromUser:(User*) u {
+-(void) registerViewFromUser:(User*) u {
     if ([usersSigWatched containsObject:u]) { return; }
     [usersSigWatched addObject:u];
     numberOfUsers++;

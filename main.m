@@ -18,6 +18,10 @@ EXPORT int __stdcall setFilmLearningMomentum(float f);
 EXPORT int __stdcall setUserLearningMomentum(float f);
 EXPORT int __stdcall setFilmLearningRate(float f);
 EXPORT int __stdcall setUserLearningRate(float f);
+EXPORT void __stdcall registerFilmView(unsigned int userID, unsigned int filmID);
+EXPORT void __stdcall triggerfullSystemML();
+EXPORT void __stdcall elasticSearchUpdate();
+EXPORT void __stdcall elasticSearchSetup();
 
 int nextFilmID;
 int nextUserID;
@@ -93,4 +97,26 @@ EXPORT int __stdcall setUserLearningRate(float f) {
     if (f > 1) { return 1; }
     userLearningRate = f;
     return 0;
+}
+
+EXPORT void registerFilmView(unsigned int userID, unsigned int filmID) {
+    Film *film = [films objectAtIndex:filmID];
+    User *user = [users objectAtIndex:userID];
+    [film registerViewFromUser:user];
+    [user addFilmToWatched:film];
+}
+
+EXPORT void __stdcall triggerfullSystemML() {
+    IMP imp_getObject = [films methodForSelector:@selector(objectAtIndex:)];
+    for (int i = 0; i < nextFilmID; i++){
+        [(Film*)imp_getObject(films, @selector(objectAtIndex:), i) runML];
+    }
+}
+
+EXPORT void __stdcall elasticSearchUpdate() {
+    
+}
+
+EXPORT void __stdcall elasticSearchSetup() {
+    
 }
