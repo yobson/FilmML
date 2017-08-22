@@ -8,6 +8,7 @@
     OFDate *dateCreated;
     MLType mlData;
     OFMutableArray *watchedFilms;
+    unsigned int totalWatchedFilms;
 */
 
 @implementation User
@@ -19,6 +20,7 @@
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
         dateCreated = [OFDate date];
         watchedFilms = [[OFMutableArray alloc] init];
+        totalWatchedFilms = 0;
     }
     return self;
 }
@@ -35,6 +37,16 @@
     double interval = [dateCreated timeIntervalSinceNow];
     interval /= 60 * 60 * 24;
     return (unsigned int)interval;
+}
+
+-(MLType*) getMLType {
+    return &mlData;
+}
+
+-(void) addFilmToWatched:(Film*) f {
+    if ([watchedFilms containsObject:f]) { return; }
+    [watchedFilms addObject:f];
+    totalWatchedFilms++;
 }
 
 -(void) reset {

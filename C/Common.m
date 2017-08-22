@@ -34,8 +34,8 @@ void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) 
         uArray = users[i]->tasteScores;
         for (int j = 0; j < numberOfFilmTypes; j++) {
             change = deltas[j] * userLearningRate * (1-userLearningMomentum) +
-            userLearningMomentum * user[i]->lastChanges[j];
-            uArray[j] += change
+            userLearningMomentum * users[i]->lastChanges[j];
+            uArray[j] += change;
             users[i]->lastChanges[j] = change;
         }
     }

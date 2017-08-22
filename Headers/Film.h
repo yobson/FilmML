@@ -2,6 +2,7 @@
 #import <ObjFW/OFString.h>
 #import <ObjFW/OFMutableArray.h>
 #import "CommonTypes.h"
+#import "User.h"
 
 @interface Film : OFObject {
     unsigned int filmID;
@@ -9,6 +10,7 @@
     FilmType defaultType;
     MLType mlData;
     OFMutableArray *usersSigWatched;
+    unsigned int numberOfUsers;
 }
 
 -(id) init;
@@ -22,7 +24,8 @@
 -(float) getDeafultType;
 -(float) getTasteScoreFor:(FilmType) t;
 
--(void) prepairSync;
+-(void) registerVieweFromUser:(User*) u;
+-(void) runML;
 -(void) reset;
 
 -(oneway void) release;

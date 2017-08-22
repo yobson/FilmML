@@ -9,6 +9,7 @@
     FilmType defaultType;
     MLType mlData;
     OFMutableArray *usersSigWatched;
+    unsigned int numberOfUsers;
 */
 
 @implementation Film
@@ -20,6 +21,7 @@
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
         filmName = [[OFString alloc] init];
         usersSigWatched = [[OFMutableArray alloc] init];
+        numberOfUsers = 0;
     }
     return self;
 }
@@ -36,6 +38,7 @@
     filmName = [[OFString alloc] initWithString:name];
     return self;
 }
+
 -(id) initWithFilmName:(OFString*) name andDefaultFilmType:(FilmType) t {
     [self initWithFilmName:name];
     defaultType = t;
@@ -48,6 +51,22 @@
 -(float) getLevelOf:(FilmType) t { return mlData.tasteScores[t]; }
 -(float) getTasteScoreFor:(FilmType) t { return mlData.tasteScores[t]; }
 -(void) setTasteScoreOf:(FilmType) t to:(float) f { updateTaste(&f, t, &mlData.tasteScores); }
+
+-(void) registerVieweFromUser:(User*) u {
+    if ([usersSigWatched containsObject:u]) { return; }
+    [usersSigWatched addObject:u];
+    numberOfUsers++;
+}
+
+-(void) runML {
+    MLType **users = malloc(sizeof(MLType*) * numberOfUsers);
+    IMP imp_getObject = [usersSigWatched methodForSelector:@selector(objectAtIndex:)];
+    for (int i = 0; i < numberOfUsers; i++) {
+        users[i] = [(User*) imp_getObject(usersSigWatched, @selector(objectAtIndex:), i) getMLType];
+    } 
+    syncTastePreferences(users, &mlData, numberOfUsers);
+    free(users);
+}
 
 -(void) reset {
     memset(mlData.tasteScores, 0, sizeof(float) * numberOfFilmTypes);

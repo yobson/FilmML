@@ -1,13 +1,16 @@
 #import <ObjFW/OFObject.h>
 #import <ObjFW/OFDate.h>
-#import <OjbFW/OFMutableArray.h>
+#import <ObjFW/OFMutableArray.h>
 #import "CommonTypes.h"
+
+@class Film;
 
 @interface User : OFObject {
     unsigned int userID;
     OFDate *dateCreated;
     MLType mlData;
     OFMutableArray *watchedFilms;
+    unsigned int totalWatchedFilms;
 }
 
 -(id) init;
@@ -17,8 +20,9 @@
 -(unsigned int) getUserID;
 -(float) getTasteScoreFor:(FilmType) t;
 -(unsigned int) daysSinceInit;
+-(MLType*) getMLType;
 
--(void) prepairSync;
+-(void) addFilmToWatched:(Film*) f;
 
 -(oneway void) release;
 
