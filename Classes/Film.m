@@ -35,7 +35,7 @@
 
 -(id) initWithFilmName:(OFString*) name {
     [self init];
-    filmName = [[OFString alloc] initWithString:name];
+    filmName = [OFString stringWithString:name];
     return self;
 }
 

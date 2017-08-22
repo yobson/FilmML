@@ -5,7 +5,14 @@
 #import <ObjFW/OFHTTPRequest.h>
 
 @interface ElasticSearch : OFObject {
-
+    OFURL *serverUrl;
+    OFString *indexName;
 }
 
-@end;
+-(id) initWithUrl:(OFString*) url;
+-(id) initWithUrl:(OFString*) url andIndexName:(OFString*) index;
+
+-(void) setServerUrl:(OFString*) s;
+-(void) setIndexName:(OFString*) s;
+
+@end
