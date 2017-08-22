@@ -7,7 +7,8 @@
     unsigned int filmID;
     OFString *filmName;
     FilmType defaultType;
-    MLType mlData
+    MLType mlData;
+    OFMutableArray *usersSigWatched;
 */
 
 @implementation Film
@@ -18,6 +19,7 @@
         mlData.tasteScores = calloc(numberOfFilmTypes, sizeof(float));
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
         filmName = [[OFString alloc] init];
+        usersSigWatched = [[OFMutableArray alloc] init];
     }
     return self;
 }
@@ -46,12 +48,6 @@
 -(float) getLevelOf:(FilmType) t { return mlData.tasteScores[t]; }
 -(float) getTasteScoreFor:(FilmType) t { return mlData.tasteScores[t]; }
 -(void) setTasteScoreOf:(FilmType) t to:(float) f { updateTaste(&f, t, &mlData.tasteScores); }
-
--(void) prepairSync {
-    for (int i = 0; i < numberOfFilmTypes; i++) {
-        mlData.lastChanges[i] = mlData.tasteScores[i];
-    }
-}
 
 -(void) reset {
     memset(mlData.tasteScores, 0, sizeof(float) * numberOfFilmTypes);

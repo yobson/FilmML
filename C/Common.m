@@ -17,7 +17,7 @@ void updateTaste(float *f, FilmType t, float **array) {
 }
 
 void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) {
-    float *uArray, *deltas = calloc(numberOfFilmTypes, sizeof(float));
+    float change, *uArray, *deltas = calloc(numberOfFilmTypes, sizeof(float));
     for (unsigned int i = 0; i < userCount; i++) {
         uArray = users[i]->tasteScores;
         for (int j = 0; j < numberOfFilmTypes; j++) {
@@ -25,16 +25,18 @@ void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) 
         }
     }
     for (int i = 0; i < numberOfFilmTypes; i++) {
-        film->tasteScores[i] += deltas[i] * filmLearningRate * (1-filmLearningMomentum) + 
-                                filmLearningMomentum * film->lastChanges[i];
-        film->lastChanges[i] = film->tasteScores[i];
+        change = deltas[i] * filmLearningRate * (1-filmLearningMomentum) + 
+        filmLearningMomentum * film->lastChanges[i];
+        film->tasteScores[i] += change;
+        film->lastChanges[i] = change;
     }
     for (unsigned int i = 0; i < userCount; i++) {
         uArray = users[i]->tasteScores;
         for (int j = 0; j < numberOfFilmTypes; j++) {
-            uArray[j] += deltas[j] * userLearningRate * (1-userLearningMomentum) +
-                                     users[i]->lastChanges[j] * userLearningMomentum;
-            users[i]->lastChanges[j] = uArray[j];
+            change = deltas[j] * userLearningRate * (1-userLearningMomentum) +
+            userLearningMomentum * user[i]->lastChanges[j];
+            uArray[j] += change
+            users[i]->lastChanges[j] = change;
         }
     }
     free(deltas);

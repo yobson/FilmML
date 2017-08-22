@@ -1,11 +1,13 @@
 #import <ObjFW/OFObject.h>
 #import <ObjFW/OFDate.h>
+#import <OjbFW/OFMutableArray.h>
 #import "CommonTypes.h"
 
 @interface User : OFObject {
     unsigned int userID;
     OFDate *dateCreated;
     MLType mlData;
+    OFMutableArray *watchedFilms;
 }
 
 -(id) init;

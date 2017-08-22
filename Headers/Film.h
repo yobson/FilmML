@@ -1,5 +1,6 @@
 #import <ObjFW/OFObject.h>
 #import <ObjFW/OFString.h>
+#import <ObjFW/OFMutableArray.h>
 #import "CommonTypes.h"
 
 @interface Film : OFObject {
@@ -7,6 +8,7 @@
     OFString *filmName;
     FilmType defaultType;
     MLType mlData;
+    OFMutableArray *usersSigWatched;
 }
 
 -(id) init;

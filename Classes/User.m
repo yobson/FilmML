@@ -7,6 +7,7 @@
     unsigned int userID;;
     OFDate *dateCreated;
     MLType mlData;
+    OFMutableArray *watchedFilms;
 */
 
 @implementation User
@@ -17,6 +18,7 @@
         mlData.tasteScores = malloc(sizeof(float) * numberOfFilmTypes);
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
         dateCreated = [OFDate date];
+        watchedFilms = [[OFMutableArray alloc] init];
     }
     return self;
 }
@@ -33,12 +35,6 @@
     double interval = [dateCreated timeIntervalSinceNow];
     interval /= 60 * 60 * 24;
     return (unsigned int)interval;
-}
-
--(void) prepairSync {
-    for (int i = 0; i < numberOfFilmTypes; i++) {
-        mlData.lastChanges[i] = mlData.tasteScores[i];
-    }
 }
 
 -(void) reset {
