@@ -5,7 +5,8 @@
 #import <ObjFW/OFHTTPRequest.h>
 
 @interface ElasticSearch : OFObject {
-    OFURL *serverUrl;
+    OFHTTPRequest *request;
+    OFString *baseURL;
     OFString *indexName;
 }
 

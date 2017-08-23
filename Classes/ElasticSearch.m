@@ -1,8 +1,10 @@
 #import "../Headers/ElasticSearch.h"
+#import <ObjFW/OFHTTPResponse.h>
 
 /*
-    OFString serverUrl;
-    OFString indexName;
+    OFHTTPRequest *request;
+    OFString *baseURL;
+    OFString *indexName;
 */
 
 @implementation ElasticSearch
@@ -10,7 +12,7 @@
 -(id) initWithUrl:(OFString*) url {
     self = [super init];
     if (self) {
-        serverUrl = [OFURL URLWithString:url];
+        baseURL = [OFString stringWithString:url];
     }
     return self;
 }
@@ -23,7 +25,7 @@
 
 
 -(void) setServerUrl:(OFString*) s {
-    serverUrl = [OFURL URLWithString:s];
+    baseURL = [OFString stringWithString:s];
 }
 
 -(void) setIndexName:(OFString*) s {
