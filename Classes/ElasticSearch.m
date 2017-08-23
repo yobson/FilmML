@@ -54,7 +54,7 @@
     [q appendString:indexName];
     request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
     [request setMethod:OF_HTTP_REQUEST_METHOD_PUT];
-    [request setBodyFromString:@"{ \"settings\" : { \"index\" : { \"number_of_shards\" : 3, \"number_of_replicas\" : 2 }}}"];
+    [request setBodyFromString:@"{ \"settings\" : { \"index\" : { \"number_of_shards\" : 1, \"number_of_replicas\" : 1 }}}"];
     OFDictionary OF_GENERIC(OFString *, OFString *) *headers = [[OFDictionary alloc] initWithObject:@"application/json" forKey:@"Content-Type"];
     [request setHeaders:headers];
     OFHTTPResponse *r = [client performRequest:request];
