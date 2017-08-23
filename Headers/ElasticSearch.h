@@ -19,5 +19,6 @@
 -(void) setServerUrl:(OFString*) s;
 -(void) setIndexName:(OFString*) s;
 -(int) checkForIndex;
+-(int) setupIndex;
 
 @end

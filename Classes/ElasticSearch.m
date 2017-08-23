@@ -1,5 +1,6 @@
 #import "../Headers/ElasticSearch.h"
 #import <ObjFW/OFMutableString.h>
+#import <ObjFW/OFDictionary.h>
 
 /*
     OFHTTPRequest *request;
@@ -43,6 +44,19 @@
     [q appendString:indexName];
     request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
     [request setMethod:OF_HTTP_REQUEST_METHOD_HEAD];
+    OFHTTPResponse *r = [client performRequest:request];
+    if ([r statusCode] == 200) { return 0; }
+    return 1;
+}
+
+-(int) setupIndex {
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_PUT];
+    [request setBodyFromString:@"{ \"settings\" : { \"index\" : { \"number_of_shards\" : 3, \"number_of_replicas\" : 2 }}}"];
+    OFDictionary OF_GENERIC(OFString *, OFString *) *headers = [[OFDictionary alloc] initWithObject:@"application/json" forKey:@"Content-Type"];
+    [request setHeaders:headers];
     OFHTTPResponse *r = [client performRequest:request];
     if ([r statusCode] == 200) { return 0; }
     return 1;
