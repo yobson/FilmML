@@ -43,7 +43,7 @@ The machine learning works by finding the difference between two vectors and app
 
 The properties of the film and user vector mean that
 
-![The summation of the Delta Vector](/images/deltaVecSum.gif)
+<img src="https://latex.codecogs.com/gif.latex?\large&space;\sum_{i=1}^t&space;\vec{\Delta}_i&space;=&space;0" title="\large \sum_{i=1}^n \vec{\Delta}_i = 0" />
 
 This means that we can multiply the delta vector by any number, apply it to our film and user vector and keep the sum total of the elements of the vectors as 1.
 
@@ -51,9 +51,9 @@ Our ML function uses the delta vector as it's gradiant for both the user and fil
 
 The simple version of the two learning functions are:
 
-![Simple Film Learning Function](/images/simpFML.gif)
-
-![Simple User Learning Function](/images/simpUML.gif)
+<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{F}_{(t&plus;1)}&space;=&space;\vec{F}_t&space;&plus;&space;\vec{\Delta}_t&space;\cdot&space;V_f" title="\large \vec{F}_{(t+1)} = \vec{F}_t + \vec{\Delta}_t \cdot V_f" />
+<br />
+<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{U}_{(t&plus;1)}&space;=&space;\vec{U}_t&space;-&space;\vec{\Delta}_t&space;\cdot&space;V_u" title="\large \vec{U}_{(t+1)} = \vec{U}_t - \vec{\Delta}_t \cdot V_u" />
 
 where Vu and Vf are constants that determin the learning speed. This affects how much change happens after each iteration. I sugest that you make both low, with Vf being far lower than Vu. This difference means that Users affect the film vector less than the film affects the user. And since the film is given a default genre, it will be far more accurate, especially in the begining.
 
@@ -61,11 +61,17 @@ The momentum function is a way of correcting big errors faster. If an element in
 
 This makes our full machine learning function the following:
 
-![Full Film Learning Function](/images/compFML.gif)
+<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{F}_{(t&plus;1)}&space;=&space;\vec{F}_t&space;&plus;&space;\vec{\Delta}_t&space;\cdot&space;V_f&space;\cdot&space;(1&space;-&space;\eta_f)&space;&plus;&space;[\vec{F}_t&space;-&space;\vec{F}_{(t-1)}]&space;\cdot&space;\eta_f" title="\large \vec{F}_{(t+1)} = \vec{F}_t + \vec{\Delta}_t \cdot V_f \cdot (1 - \eta_f) + [\vec{F}_t - \vec{F}_{(t-1)}] \cdot \eta_f" />
+<br />
+<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{U}_{(t&plus;1)}&space;=&space;\vec{U}_t&space;-&space;\vec{\Delta}_t&space;\cdot&space;V_u&space;\cdot&space;(1&space;-&space;\eta_u)&space;&plus;&space;[\vec{U}_t&space;-&space;\vec{U}_{(t-1)}]&space;\cdot&space;\eta_u" title="\large \vec{U}_{(t+1)} = \vec{U}_t - \vec{\Delta}_t \cdot V_u \cdot (1 - \eta_u) + [\vec{U}_t - \vec{U}_{(t-1)}] \cdot \eta_u" />
 
-![Full User Learning Function](/images/compUML.gif)
+Where eta denotes the momentum and t is a unit for descrete time or iteration.
 
-Where eta denotes the momentum and t is a unit for descrete time.
+In order to get the list of suggested films, first a list of films a user has not seen must be built. Then the compatability function is applied:
+
+<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{C}&space;:=&space;\vec{F}&space;\odot&space;\vec{U}&space;\cdot&space;kN&space;\therefore&space;C&space;=&space;\sum_{i&space;=&space;1}^{n}&space;\vec{C}_i" title="\large \vec{C} := \vec{F} \odot \vec{U} \cdot kN \therefore C = \sum_{i = 1}^{n} \vec{C}_i"/>
+
+where n is number of film views, k is a constant that affects how influential this is. The circle dot operator is the [Hadamard Product](https://en.wikipedia.org/wiki/Hadamard_product_(matrices))
 
 ## Todo
 - [x] Build windows enviroment
