@@ -173,4 +173,17 @@
     return 1;
 }
 
+-(OFString*) jsonFromFilmIDArray:(unsigned int*) array ofSize:(unsigned int) s {
+    OFMutableString *out = [[OFMutableString alloc] init];
+    SEL sel_append = @selector(appendString:);
+    IMP imp_append = [out methodForSelector:sel_append];
+
+    imp_append(out, sel_append, @"[ ");
+    for (int i = 0; i < s-1; i++) {
+        imp_append(out, sel_append, [OFString stringWithFormat:@"%d, ", array[i]]);
+    }
+    imp_append(out, sel_append, [OFString stringWithFormat:@"%d ]", array[s]]);
+    return out;
+}
+
 @end

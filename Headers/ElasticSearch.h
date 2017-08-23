@@ -26,4 +26,6 @@
 -(int) deleteFilm:(unsigned int) id;
 -(int) deleteUser:(unsigned int) id;
 
+-(OFString*) jsonFromFilmIDArray:(unsigned int*) array ofSize:(unsigned int) s;
+
 @end
