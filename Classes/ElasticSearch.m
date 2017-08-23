@@ -92,6 +92,85 @@
     }
     [request release];
     if ([r statusCode] == 200) { return 0; }
+    return 1;
+}
+
+-(int) addFilm:(unsigned int) id {
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    [q appendString:@"/film"];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_POST];
+    [request setBodyFromString:[OFString stringWithFormat:@"{ \"ID\" : %d }", id]];
+    OFDictionary OF_GENERIC(OFString *, OFString *) *headers = [[OFDictionary alloc] initWithObject:@"application/json" forKey:@"Content-Type"];
+    [request setHeaders:headers];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
+    if ([r statusCode] == 200) { return 0; }
+    return 1;
+}
+
+-(int) addUser:(unsigned int) id {
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    [q appendString:@"/user"];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_POST];
+    [request setBodyFromString:[OFString stringWithFormat:@"{ \"ID\" : %d }", id]];
+    OFDictionary OF_GENERIC(OFString *, OFString *) *headers = [[OFDictionary alloc] initWithObject:@"application/json" forKey:@"Content-Type"];
+    [request setHeaders:headers];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
+    if ([r statusCode] == 200) { return 0; }
+    return 1;
+}
+
+-(int) deleteFilm:(unsigned int) id {
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    [q appendString:[OFString stringWithFormat:@"/film/_delete_by_query?q=ID=%d", id]];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_GET];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
+    if ([r statusCode] == 200) { return 0; }
+    return 1;
+}
+
+-(int) deleteUser:(unsigned int) id {
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    [q appendString:[OFString stringWithFormat:@"/user/_delete_by_query?q=ID=%d", id]];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_GET];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
+    if ([r statusCode] == 200) { return 0; }
+    return 1;
 }
 
 @end

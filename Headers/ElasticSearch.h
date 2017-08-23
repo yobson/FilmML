@@ -21,5 +21,9 @@
 -(int) checkForIndex;
 -(int) setupIndex;
 -(int) deleteIndex;
+-(int) addFilm:(unsigned int) id;
+-(int) addUser:(unsigned int) id;
+-(int) deleteFilm:(unsigned int) id;
+-(int) deleteUser:(unsigned int) id;
 
 @end

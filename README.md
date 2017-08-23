@@ -33,7 +33,7 @@ Each taste preference is stored in a vector of n elements where n is the number 
 
 where the vector has the following property
 
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\sum_{i=1}^t&space;u_i&space;=&space;1" title="\large \sum_{i=1}^t u_i = 1" />
+<img src="https://latex.codecogs.com/gif.latex?\large&space;\sum_{i=1}^n&space;u_i&space;=&space;1" title="\large \sum_{i=1}^t u_i = 1" />
 
 Becuase the vector sum always = 1, the values inside can be used as a ratio or percentage that indeicates a user's taste or tilm type as a set of ratios. This means that the machine learning [activation function](https://en.wikipedia.org/wiki/Activation_function) must be y=x in order to keep this proptionality.
 
