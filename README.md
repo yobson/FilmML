@@ -23,6 +23,9 @@ On Windows, you will need the ObjFW dlls (which are coppied into the bin folder 
 #### Overview
 The idea is each film and user shall be represented as a node. Each film is given a default genre but has a list of other genres. The default genre is set to 1 and the rest 0. This is called taste scores becuase if a lot of people who like crime watch a horor film (for example) and enjoy it, the film's crime taste score will be increased and the user's horor taste score will also be increased. People have their taste scorse for the different film types set to 0. As people watch films, it will work out if they like it or not (thumbs up / watch time) and will ajust their film prefenece based on this. When a user with a different set of preferences watches a film and enjoys it, a link is produced between the two. As the two have their preferences updated, they will affect eachother (the film will affect the user more), but the link will die after a given period. An algorythm will go though each user and cross reference their preferences with the film to produce a single figure called compatibility. This will then me multiplied by the number of views. The films shall be ordered in decending order and the first n number of films shall be stored in Elasticsearch under the user's entry for a web application to access.
 
+#### Why Objective c?
+The reason for this project is to build a ML film recomendation system that works with flow CPU and memory usage. For this reason, being able to move pointers about and have native compilation makes a C language the best choice. However, I went for objective c becuase I can wrap C classes in OOP without the added extra work C++ requires. My tests in C# showed that it would make a far slower project
+
 #### The Maths
 Each easte preference is stored in a vector of t elements where t is the number of genres
 
@@ -62,9 +65,7 @@ This makes our full machine learning function the following:
 
 ![Full User Learning Function](/images/compUML.gif)
 
-Where eta denotes the momentum
-### Why Objective c?
-The reason for this project is to build a ML film recomendation system that works with flow CPU and memory usage. For this reason, being able to move pointers about and have native compilation makes a C language the best choice. However, I went for objective c becuase I can wrap C classes in OOP without the added extra work C++ requires. My tests in C# showed that it would make a far slower project
+Where eta denotes the momentum and t is a unit for descrete time.
 
 ## Todo
 - [x] Build windows enviroment
