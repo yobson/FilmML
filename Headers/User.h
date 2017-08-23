@@ -10,6 +10,7 @@
     OFDate *dateCreated;
     MLType mlData;
     OFMutableArray *watchedFilms;
+    unsigned int *sugestedFilms;
     unsigned int totalWatchedFilms;
 }
 
@@ -17,6 +18,8 @@
 -(id) initWithCustomID:(unsigned int) i;
 
 -(void) setTasteScoreFor:(FilmType) t to:(float) f;
+-(void) setFilmSuggestions:(unsigned int*) i;
+-(unsigned int*) getFilmSuggestions;
 -(unsigned int) getUserID;
 -(float) getTasteScoreFor:(FilmType) t;
 -(unsigned int) daysSinceInit;

@@ -9,6 +9,7 @@
     MLType mlData;
     OFMutableArray *watchedFilms;
     unsigned int totalWatchedFilms;
+    unsinged int *sugestedFilms;
 */
 
 @implementation User
@@ -20,6 +21,7 @@
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
         dateCreated = [OFDate date];
         watchedFilms = [[OFMutableArray alloc] init];
+        sugestedFilms = NULL;
         totalWatchedFilms = 0;
     }
     return self;
@@ -33,6 +35,8 @@
 -(unsigned int) getUserID { return userID; }
 -(float) getTasteScoreFor:(FilmType) t { return mlData.tasteScores[t]; }
 -(void) setTasteScoreFor:(FilmType) t to:(float) f { updateTaste(&f, t, &mlData.tasteScores); }
+-(void) setFilmSuggestions:(unsigned int*) i { sugestedFilms = i; }
+-(unsigned int*) getFilmSuggestions { return sugestedFilms; }
 -(unsigned int) daysSinceInit {
     double interval = [dateCreated timeIntervalSinceNow];
     interval /= 60 * 60 * 24;
@@ -57,6 +61,7 @@
 -(oneway void) release {
     free(mlData.tasteScores);
     free(mlData.lastChanges);
+    if (sugestedFilms != NULL) { free(sugestedFilms); }
     [super release];
 }
 

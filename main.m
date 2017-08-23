@@ -1,6 +1,7 @@
 #import "Headers/Film.h"
 #import "Headers/User.h"
 #import "Headers/CommonTypes.h"
+#import "Headers/ElasticSearch.h"
 #import <ObjFW/OFObject.h>
 #import <ObjFW/OFAutoreleasePool.h>
 #import <ObjFW/OFArray.h>
@@ -18,16 +19,19 @@ EXPORT int __stdcall setFilmLearningMomentum(float f);
 EXPORT int __stdcall setUserLearningMomentum(float f);
 EXPORT int __stdcall setFilmLearningRate(float f);
 EXPORT int __stdcall setUserLearningRate(float f);
+EXPORT void __stdcall setNumberOfFilmSuggestions(unsigned int s);
 EXPORT void __stdcall registerFilmView(unsigned int userID, unsigned int filmID);
 EXPORT void __stdcall triggerfullSystemML();
-EXPORT void __stdcall elasticSearchUpdate();
-EXPORT void __stdcall elasticSearchSetup();
+EXPORT int __stdcall elasticSearchUpdate();
+EXPORT int __stdcall elasticSearchClean();
+EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
 
 int nextFilmID;
 int nextUserID;
 int userLife;
 OFMutableArray *films;
 OFMutableArray *users;
+ElasticSearch *ES;
 
 EXPORT int initFilmML() {
     printf("Init DLL\n");
@@ -59,10 +63,10 @@ EXPORT int addUser() {
 
 EXPORT void cleanUpUsers() {
     printf("Cleaning up users\n");
-    User *temp = [[User alloc] init];
-    IMP imp_getObject = [users methodForSelector:@selector(objectAtIndex:)];
-    IMP imp_getDays = [temp methodForSelector:@selector(daysSinceInit)];
-    [temp release];
+    User *temp;// = [[User alloc] init];
+    IMP imp_getObject = [User methodForSelector:@selector(objectAtIndex:)];
+    IMP imp_getDays = [User methodForSelector:@selector(daysSinceInit)];
+    //[temp release];
     for (int i = 0; i < nextUserID; i++) {
         temp = imp_getObject(users, @selector(objectAtIndex:), i);
         if ((int)imp_getDays(temp, @selector(daysSinceInit)) > userLife) {
@@ -99,6 +103,10 @@ EXPORT int __stdcall setUserLearningRate(float f) {
     return 0;
 }
 
+EXPORT void setNumberOfFilmSuggestions(unsigned int s) {
+    numberOfFilmSuggestions = s;
+}
+
 EXPORT void registerFilmView(unsigned int userID, unsigned int filmID) {
     Film *film = [films objectAtIndex:filmID];
     User *user = [users objectAtIndex:userID];
@@ -113,10 +121,27 @@ EXPORT void __stdcall triggerfullSystemML() {
     }
 }
 
-EXPORT void __stdcall elasticSearchUpdate() {
-    
+EXPORT int __stdcall elasticSearchUpdate() {
+    SEL sel_getUserFilmSuggestion = @selector(getFilmSelection);
+    SEL sel_getObject = @selector(objectAtIndex:);
+    IMP imp_getObject = [User methodForSelector:sel_getObject];
+    IMP imp_getUserFilmSuggestion = [User methodForSelector:sel_getUserFilmSuggestion];
+    for (int i = 0; i < nextUserID; i++) {
+        [ES updateUserOfID:i filmSuggestionsTo:(unsigned int*)imp_getUserFilmSuggestion(
+            (User*)imp_getObject(users, sel_getObject, i), sel_getUserFilmSuggestion) 
+            ofLength:numberOfFilmSuggestions];
+    }
+    return 0;
 }
 
-EXPORT void __stdcall elasticSearchSetup() {
-    
+EXPORT int __stdcall elasticSearchClean() {
+    return 0;
+}
+
+EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex) {
+    [ES setServerUrl:[OFString stringWithUTF8String:esURL]];
+    [ES setIndexName:[OFString stringWithUTF8String:esIndex]];
+    if ([ES checkForIndex]) { [ES deleteIndex]; }
+    if (![ES setupIndex]) { return 1; }
+    return 0;
 }

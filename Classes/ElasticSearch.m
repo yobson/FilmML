@@ -32,13 +32,10 @@
 }
 
 
--(void) setServerUrl:(OFString*) s {
-    baseURL = [OFString stringWithString:s];
-}
-
--(void) setIndexName:(OFString*) s {
-    indexName = [OFString stringWithString:s];
-}
+-(void) setServerUrl:(OFString*) s { baseURL = [OFString stringWithString:s]; }
+-(void) setIndexName:(OFString*) s { indexName = [OFString stringWithString:s]; }
+-(OFString*) getIndexName { return indexName; }
+-(OFString*) getServerUrl { return baseURL; }
 
 -(int) checkForIndex {
     OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
@@ -173,7 +170,7 @@
     return 1;
 }
 
--(int) updateUserOfID:(unsigned int) id FilmSuggestionsTo:(unsigned int*) array ofLength:(unsigned int) s {
+-(int) updateUserOfID:(unsigned int) id filmSuggestionsTo:(unsigned int*) array ofLength:(unsigned int) s {
     OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
     [q appendString:indexName];
     [q appendString:[OFString stringWithFormat:@"/user/%d/_update",id]];

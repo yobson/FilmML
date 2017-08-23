@@ -5,6 +5,8 @@ float userLearningRate = 0.3;
 float filmLearningMomentum = 0.2;
 float userLearningMomentum = 0.2;
 
+unsigned int numberOfFilmSuggestions = 10;
+
 typedef struct {
     float *tasteScores;
     float *lastChanges;
