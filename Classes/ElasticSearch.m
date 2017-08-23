@@ -39,15 +39,16 @@
 }
 
 -(OFHTTPResponse*) doRequest:(OFString*) query; {
-    request = [[OFHTTPRequest alloc] initWithUrl:[OFURL URLWithString:query]];
-    [client performRequestL:request];
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    return [client performRequest:request];
+    
 }
 
 -(int) checkForIndex {
-    OFMutableString *query = [[OFMutableString alloc] init];
-    [query appendString:[OFString stringWithFormat:"%@%@", baseURL, indexName]];
-    OFHTTPResponse *r = [self doRequest:query];
-    if ([r statusCode == 200]) { return 0; }
+    OFHTTPResponse *r = [self doRequest:indexName];
+    if ([r statusCode] == 200) { return 0; }
     return 1;
 }
 
