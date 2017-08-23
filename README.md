@@ -27,23 +27,23 @@ The idea is each film and user shall be represented as a node. Each film is give
 The reason for this project is to build a ML film recomendation system that works with flow CPU and memory usage. For this reason, being able to move pointers about and have native compilation makes a C language the best choice. However, I went for objective c becuase I can wrap C classes in OOP without the added extra work C++ requires. My tests in C# showed that it would make a far slower project
 
 #### The Maths
-Each taste preference is stored in a vector of n elements where n is the number of genres.
+Each taste preference is stored in a vector of t elements where t is the number of genres.
 
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{U}&space;=&space;\begin{bmatrix}&space;u_1&space;\\&space;u_2&space;\\&space;...&space;\\&space;u_n&space;\end{bmatrix}" title="\large \vec{U} = \begin{bmatrix} u_1 \\ u_2 \\ ... \\ u_n \end{bmatrix}" />
+![](/images/vec1.gif)
 
 where the vector has the following property
 
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\sum_{i=1}^t&space;\vec{U}_i&space;=&space;1" title="\large \sum_{i=1}^t \vec{U}_i = 1" />
+![](/images/VecSum.gif)
 
 Becuase the vector sum always = 1, the values inside can be used as a ratio or percentage that indeicates a user's taste or tilm type as a set of ratios. This means that the machine learning [activation function](https://en.wikipedia.org/wiki/Activation_function) must be y=x in order to keep this proptionality.
 
 The machine learning works by finding the difference between two vectors and appying a momentum function and learning speed constant to it in order to calculate how the film and taste vecotrs need to change.
 
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{\Delta}&space;=&space;\begin{bmatrix}&space;u_1&space;\\&space;u_2&space;\\&space;...&space;\\&space;u_n&space;\end{bmatrix}&space;-&space;\begin{bmatrix}&space;f_1&space;\\&space;f_2&space;\\&space;...&space;\\&space;f_n&space;\end{bmatrix}" title="\large \vec{\Delta} = \begin{bmatrix} u_1 \\ u_2 \\ ... \\ u_t \end{bmatrix} - \begin{bmatrix} f_1 \\ f_2 \\ ... \\ f_t \end{bmatrix}" />
+![](/images/DeltaVec.gif)
 
 The properties of the film and user vector mean that
 
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\sum_{i=1}^n&space;\vec{\Delta}_i&space;=&space;0" title="\large \sum_{i=1}^n \vec{\Delta}_i = 0" />
+![](/images/deltaVecSum.gif)
 
 This means that we can multiply the delta vector by any number, apply it to our film and user vector and keep the sum total of the elements of the vectors as 1.
 
@@ -51,9 +51,9 @@ Our ML function uses the delta vector as it's gradiant for both the user and fil
 
 The simple version of the two learning functions are:
 
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{F}_{(t&plus;1)}&space;=&space;\vec{F}_t&space;&plus;&space;\vec{\Delta}_t&space;\cdot&space;V_f" title="\large \vec{F}_{(t+1)} = \vec{F}_t + \vec{\Delta}_t \cdot V_f" />
-<br />
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{U}_{(t&plus;1)}&space;=&space;\vec{U}_t&space;-&space;\vec{\Delta}_t&space;\cdot&space;V_u" title="\large \vec{U}_{(t+1)} = \vec{U}_t - \vec{\Delta}_t \cdot V_u" />
+![](/images/simpFML.gif)
+
+![](/images/simpUML.gif)
 
 where Vu and Vf are constants that determin the learning speed. This affects how much change happens after each iteration. I sugest that you make both low, with Vf being far lower than Vu. This difference means that Users affect the film vector less than the film affects the user. And since the film is given a default genre, it will be far more accurate, especially in the begining.
 
@@ -61,15 +61,16 @@ The momentum function is a way of correcting big errors faster. If an element in
 
 This makes our full machine learning function the following:
 
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{F}_{(t&plus;1)}&space;=&space;\vec{F}_t&space;&plus;&space;\vec{\Delta}_t&space;\cdot&space;V_f&space;\cdot&space;(1&space;-&space;\eta_f)&space;&plus;&space;[\vec{F}_t&space;-&space;\vec{F}_{(t-1)}]&space;\cdot&space;\eta_f" title="\large \vec{F}_{(t+1)} = \vec{F}_t + \vec{\Delta}_t \cdot V_f \cdot (1 - \eta_f) + [\vec{F}_t - \vec{F}_{(t-1)}] \cdot \eta_f" />
-<br />
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{U}_{(t&plus;1)}&space;=&space;\vec{U}_t&space;-&space;\vec{\Delta}_t&space;\cdot&space;V_u&space;\cdot&space;(1&space;-&space;\eta_u)&space;&plus;&space;[\vec{U}_t&space;-&space;\vec{U}_{(t-1)}]&space;\cdot&space;\eta_u" title="\large \vec{U}_{(t+1)} = \vec{U}_t - \vec{\Delta}_t \cdot V_u \cdot (1 - \eta_u) + [\vec{U}_t - \vec{U}_{(t-1)}] \cdot \eta_u" />
+![](/images/compFML.gif)
+
+
+![](/images/compUML.gif)
 
 Where eta denotes the momentum and t is a unit for descrete time or iteration.
 
 In order to get the list of suggested films, first a list of films a user has not seen must be built. Then the compatability function is applied:
 
-<img src="https://latex.codecogs.com/gif.latex?\large&space;\vec{C}&space;:=&space;\vec{F}&space;\odot&space;\vec{U}&space;\cdot&space;kN&space;\therefore&space;C&space;=&space;\sum_{i&space;=&space;1}^{n}&space;\vec{C}_i" title="\large \vec{C} := \vec{F} \odot \vec{U} \cdot kN \therefore C = \sum_{i = 1}^{n} \vec{C}_i"/>
+![](/images/compFunc.gif)
 
 where n is number of film views, k is a constant that affects how influential this is. The circle dot operator is the [Hadamard Product](https://en.wikipedia.org/wiki/Hadamard_product_(matrices)). C can then be used as a ranking that rates films on both popularity and compatability.
 
