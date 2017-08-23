@@ -34,6 +34,7 @@ Each taste preference is stored in a vector of n elements where n is the number 
 where the vector has the following property
 
 <img src="https://latex.codecogs.com/gif.latex?\large&space;\sum_{i=1}^t&space;\vec{U}_i&space;=&space;1" title="\large \sum_{i=1}^t \vec{U}_i = 1" />
+
 Becuase the vector sum always = 1, the values inside can be used as a ratio or percentage that indeicates a user's taste or tilm type as a set of ratios. This means that the machine learning [activation function](https://en.wikipedia.org/wiki/Activation_function) must be y=x in order to keep this proptionality.
 
 The machine learning works by finding the difference between two vectors and appying a momentum function and learning speed constant to it in order to calculate how the film and taste vecotrs need to change.
