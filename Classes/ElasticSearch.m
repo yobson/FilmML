@@ -38,16 +38,12 @@
     indexName = [OFString stringWithString:s];
 }
 
--(OFHTTPResponse*) doRequest:(OFString*) query; {
+-(int) checkForIndex {
     OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
     [q appendString:indexName];
     request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
-    return [client performRequest:request];
-    
-}
-
--(int) checkForIndex {
-    OFHTTPResponse *r = [self doRequest:indexName];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_HEAD];
+    OFHTTPResponse *r = [client performRequest:request];
     if ([r statusCode] == 200) { return 0; }
     return 1;
 }

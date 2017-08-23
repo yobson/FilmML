@@ -18,7 +18,6 @@
 
 -(void) setServerUrl:(OFString*) s;
 -(void) setIndexName:(OFString*) s;
--(OFHTTPResponse*) doRequest:(OFString*) query; 
 -(int) checkForIndex;
 
 @end
