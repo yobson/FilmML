@@ -20,5 +20,6 @@
 -(void) setIndexName:(OFString*) s;
 -(int) checkForIndex;
 -(int) setupIndex;
+-(int) deleteIndex;
 
 @end

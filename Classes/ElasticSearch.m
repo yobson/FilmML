@@ -1,6 +1,7 @@
 #import "../Headers/ElasticSearch.h"
 #import <ObjFW/OFMutableString.h>
 #import <ObjFW/OFDictionary.h>
+#import <ObjFW/OFHTTPRequestFailedException.h>
 
 /*
     OFHTTPRequest *request;
@@ -20,7 +21,7 @@
 
 -(id) initWithUrl:(OFString*) url {
     [self init];
-    baseURL = [OFString stringWithFormat:@"%@%s", url,([url hasSuffix:@"/"] ? "" : "/")];
+    baseURL = baseURL = [OFString stringWithFormat:@"%s%@%s",([url hasPrefix:@"http://"] ? "" : "http://"), url,([url hasSuffix:@"/"] ? "" : "/")];
     return self;
 }
 
@@ -44,22 +45,53 @@
     [q appendString:indexName];
     request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
     [request setMethod:OF_HTTP_REQUEST_METHOD_HEAD];
-    OFHTTPResponse *r = [client performRequest:request];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
     if ([r statusCode] == 200) { return 0; }
     return 1;
 }
 
 -(int) setupIndex {
+    if (![self checkForIndex]) { return 1; }
     OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
     [q appendString:indexName];
     request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
     [request setMethod:OF_HTTP_REQUEST_METHOD_PUT];
-    [request setBodyFromString:@"{ \"settings\" : { \"index\" : { \"number_of_shards\" : 1, \"number_of_replicas\" : 1 }}}"];
+    [request setBodyFromString:@"{  \"settings\" : {\"number_of_shards\" : 1  },  \"mappings\" : {\"user\" : { \"properties\" : {  \"ID\" : { \"type\" : \"integer\" },  \"SugestedFilms\" : { \"type\": \"integer\" } }}, \"film\" : { \"properties\" : {  \"ID\" : { \"type\" : \"integer\" } }}  } }"];
     OFDictionary OF_GENERIC(OFString *, OFString *) *headers = [[OFDictionary alloc] initWithObject:@"application/json" forKey:@"Content-Type"];
     [request setHeaders:headers];
-    OFHTTPResponse *r = [client performRequest:request];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
     if ([r statusCode] == 200) { return 0; }
     return 1;
+}
+
+-(int) deleteIndex {
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_DELETE];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
+    if ([r statusCode] == 200) { return 0; }
 }
 
 @end
