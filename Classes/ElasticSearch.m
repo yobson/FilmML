@@ -1,5 +1,5 @@
 #import "../Headers/ElasticSearch.h"
-#import <ObjFW/OFHTTPResponse.h>
+#import <ObjFW/OFMutableString.h>
 
 /*
     OFHTTPRequest *request;
@@ -9,11 +9,17 @@
 
 @implementation ElasticSearch
 
--(id) initWithUrl:(OFString*) url {
+-(id) init {
     self = [super init];
     if (self) {
-        baseURL = [OFString stringWithString:url];
+        client = [[OFHTTPClient alloc] init];
     }
+    return self;
+}
+
+-(id) initWithUrl:(OFString*) url {
+    [self init];
+    baseURL = [OFString stringWithFormat:@"%@%s", url,([url hasSuffix:@"/"] ? "" : "/")];
     return self;
 }
 
@@ -30,6 +36,19 @@
 
 -(void) setIndexName:(OFString*) s {
     indexName = [OFString stringWithString:s];
+}
+
+-(OFHTTPResponse*) doRequest:(OFString*) query; {
+    request = [[OFHTTPRequest alloc] initWithUrl:[OFURL URLWithString:query]];
+    [client performRequestL:request];
+}
+
+-(int) checkForIndex {
+    OFMutableString *query = [[OFMutableString alloc] init];
+    [query appendString:[OFString stringWithFormat:"%@%@", baseURL, indexName]];
+    OFHTTPResponse *r = [self doRequest:query];
+    if ([r statusCode == 200]) { return 0; }
+    return 1;
 }
 
 @end
