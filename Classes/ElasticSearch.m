@@ -98,7 +98,7 @@
 -(int) addFilm:(unsigned int) id {
     OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
     [q appendString:indexName];
-    [q appendString:@"/film"];
+    [q appendString:[OFString stringWithFormat:@"/film/%d", id]];
     request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
     [request setMethod:OF_HTTP_REQUEST_METHOD_POST];
     [request setBodyFromString:[OFString stringWithFormat:@"{ \"ID\" : %d }", id]];
@@ -119,7 +119,7 @@
 -(int) addUser:(unsigned int) id {
     OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
     [q appendString:indexName];
-    [q appendString:@"/user"];
+    [q appendString:[OFString stringWithFormat:@"/user/%d", id]];
     request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
     [request setMethod:OF_HTTP_REQUEST_METHOD_POST];
     [request setBodyFromString:[OFString stringWithFormat:@"{ \"ID\" : %d }", id]];
@@ -173,7 +173,29 @@
     return 1;
 }
 
--(OFString*) jsonFromFilmIDArray:(unsigned int*) array ofSize:(unsigned int) s {
+-(int) updateUserOfID:(unsigned int) id FilmSuggestionsTo:(unsigned int*) array ofLength:(unsigned int) s {
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    [q appendString:[OFString stringWithFormat:@"/user/%d/_update",id]];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_POST];
+    [request setBodyFromString:[OFString stringWithFormat:@"{\"doc\": {\"SugestedFilms\" : %@}}", [ElasticSearch jsonFromFilmIDArray:array ofSize:s]]];
+    OFDictionary OF_GENERIC(OFString *, OFString *) *headers = [[OFDictionary alloc] initWithObject:@"application/json" forKey:@"Content-Type"];
+    [request setHeaders:headers];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
+    if ([r statusCode] == 200) { return 0; }
+    return 1;
+}
+
+
++(OFString*) jsonFromFilmIDArray:(unsigned int*) array ofSize:(unsigned int) s {
     OFMutableString *out = [[OFMutableString alloc] init];
     SEL sel_append = @selector(appendString:);
     IMP imp_append = [out methodForSelector:sel_append];

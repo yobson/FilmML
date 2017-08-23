@@ -25,7 +25,8 @@
 -(int) addUser:(unsigned int) id;
 -(int) deleteFilm:(unsigned int) id;
 -(int) deleteUser:(unsigned int) id;
+-(int) updateUserOfID:(unsigned int) id FilmSuggestionsTo:(unsigned int*) array ofLength:(unsigned int) s;
 
--(OFString*) jsonFromFilmIDArray:(unsigned int*) array ofSize:(unsigned int) s;
++(OFString*) jsonFromFilmIDArray:(unsigned int*) array ofSize:(unsigned int) s;
 
 @end
