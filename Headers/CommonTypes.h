@@ -10,4 +10,5 @@ unsigned int numberOfFilmSuggestions = 10;
 typedef struct {
     float *tasteScores;
     float *lastChanges;
+    unsigned int *suggestedFilms;
 } MLType;

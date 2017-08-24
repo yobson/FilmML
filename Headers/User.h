@@ -10,7 +10,6 @@
     OFDate *dateCreated;
     MLType mlData;
     OFMutableArray *watchedFilms;
-    unsigned int *sugestedFilms;
     unsigned int totalWatchedFilms;
 }
 

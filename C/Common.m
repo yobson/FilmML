@@ -41,3 +41,4 @@ void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) 
     }
     free(deltas);
 }
+

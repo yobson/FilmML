@@ -119,6 +119,13 @@ EXPORT void __stdcall triggerfullSystemML() {
     for (int i = 0; i < nextFilmID; i++){
         [(Film*)imp_getObject(films, @selector(objectAtIndex:), i) runML];
     }
+    // OFArray *sorted;
+    // SEL selGet
+    // for(int i = 0; i < nextUserID; i++) {
+    //     OFArray *
+    // }
+
+    // JAMES!! YOU ARE HERE!!!
 }
 
 EXPORT int __stdcall elasticSearchUpdate() {
@@ -141,7 +148,7 @@ EXPORT int __stdcall elasticSearchClean() {
 EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex) {
     [ES setServerUrl:[OFString stringWithUTF8String:esURL]];
     [ES setIndexName:[OFString stringWithUTF8String:esIndex]];
-    if ([ES checkForIndex]) { [ES deleteIndex]; }
+    if ([ES checkForIndex]) { return 1; }
     if (![ES setupIndex]) { return 1; }
     return 0;
 }
