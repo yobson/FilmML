@@ -1,5 +1,5 @@
 # FilmML
-A machine learning film recomendation experiment designed for a lower power and memory enviroment than depp learning. By the end, it should be filly interfaced with C# and elasticsearch (for an ASP.net site).
+A machine learning film recomendation experiment designed for a lower power and memory enviroment than deep learning. By the end, it should be filly interfaced with C# and elasticsearch (for an ASP.net site).
 
 ## Enviroment Setup
 ### POSIX

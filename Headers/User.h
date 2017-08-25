@@ -19,6 +19,8 @@
 -(void) setTasteScoreFor:(FilmType) t to:(float) f;
 -(void) setFilmSuggestions:(unsigned int*) i;
 -(unsigned int*) getFilmSuggestions;
+-(OFMutableArray*) getWatchedFilmList;
+-(unsigned int) getNumberOfWatchedFilms;
 -(unsigned int) getUserID;
 -(float) getTasteScoreFor:(FilmType) t;
 -(unsigned int) daysSinceInit;

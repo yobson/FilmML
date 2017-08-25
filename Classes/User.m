@@ -9,7 +9,7 @@
     MLType mlData;
     OFMutableArray *watchedFilms;
     unsigned int totalWatchedFilms;
-    unsinged int *mlData.suggestedFilms;
+    unsinged int *mlData.specific.suggestedFilms;
 */
 
 @implementation User
@@ -21,7 +21,7 @@
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
         dateCreated = [OFDate date];
         watchedFilms = [[OFMutableArray alloc] init];
-        mlData.suggestedFilms = NULL;
+        mlData.specific.suggestedFilms = NULL;
         totalWatchedFilms = 0;
     }
     return self;
@@ -35,8 +35,10 @@
 -(unsigned int) getUserID { return userID; }
 -(float) getTasteScoreFor:(FilmType) t { return mlData.tasteScores[t]; }
 -(void) setTasteScoreFor:(FilmType) t to:(float) f { updateTaste(&f, t, &mlData.tasteScores); }
--(void) setFilmSuggestions:(unsigned int*) i { mlData.suggestedFilms = i; }
--(unsigned int*) getFilmSuggestions { return mlData.suggestedFilms; }
+-(void) setFilmSuggestions:(unsigned int*) i { mlData.specific.suggestedFilms = i; }
+-(unsigned int*) getFilmSuggestions { return mlData.specific.suggestedFilms; }
+-(OFMutableArray*) getWatchedFilmList { return watchedFilms; }
+-(unsigned int) getNumberOfWatchedFilms { return totalWatchedFilms; }
 -(unsigned int) daysSinceInit {
     double interval = [dateCreated timeIntervalSinceNow];
     interval /= 60 * 60 * 24;
@@ -61,7 +63,7 @@
 -(oneway void) release {
     free(mlData.tasteScores);
     free(mlData.lastChanges);
-    if (mlData.suggestedFilms != NULL) { free(mlData.suggestedFilms); }
+    if (mlData.specific.suggestedFilms != NULL) { free(mlData.specific.suggestedFilms); }
     [super release];
 }
 

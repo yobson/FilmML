@@ -42,3 +42,10 @@ void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) 
     free(deltas);
 }
 
+float compatabilityFunction(MLType *user, MLType *film) {
+    float sum = 0;
+    for (int i= 0; i < numberOfFilmTypes; i++) {
+        sum += user->tasteScores[i] * film->tasteScores[i] * film->specific.filmViews;
+    }
+    return sum;
+}

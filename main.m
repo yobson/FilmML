@@ -26,9 +26,9 @@ EXPORT int __stdcall elasticSearchUpdate();
 EXPORT int __stdcall elasticSearchClean();
 EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
 
-int nextFilmID;
-int nextUserID;
-int userLife;
+unsigned int nextFilmID;
+unsigned int nextUserID;
+unsigned int userLife;
 OFMutableArray *films;
 OFMutableArray *users;
 ElasticSearch *ES;
@@ -115,17 +115,44 @@ EXPORT void registerFilmView(unsigned int userID, unsigned int filmID) {
 }
 
 EXPORT void __stdcall triggerfullSystemML() {
-    IMP imp_getObject = [films methodForSelector:@selector(objectAtIndex:)];
+    SEL sel_getObject = @selector(objectAtIndex:);
+    IMP imp_getObject = [OFMutableArray methodForSelector:sel_getObject];
+    SEL sel_runML = @selector(runML);
+    IMP imp_runML = [Film methodForSelector:sel_runML];
     for (int i = 0; i < nextFilmID; i++){
-        [(Film*)imp_getObject(films, @selector(objectAtIndex:), i) runML];
+        imp_runML((Film*)imp_getObject(films, sel_getObject, i), sel_runML);
     }
-    // OFArray *sorted;
-    // SEL selGet
-    // for(int i = 0; i < nextUserID; i++) {
-    //     OFArray *
-    // }
+    MLType *finalUserFilmArray;
+    Film *filmToTest;
+    User *currentUser;
+    finalUserFilmArray = malloc(sizeof(unsigned int) * numberOfFilmSuggestions);
 
-    // JAMES!! YOU ARE HERE!!!
+    typedef struct {
+        float compatabilityScore;
+        unsigned int ID;
+    } MLID;
+
+    MLID *tempArray;
+    SEL sel_filmNumber = @selector(getNumberOfWatchedFilms);
+    IMP imp_filmNUmber = [User methodForSelector:sel_filmNumber];
+    SEL sel_films = @selector(getWatchedFilms);
+    IMP imp_films = [User methodForSelector:sel_films];
+    SEL sel_contains = @selector(containsObject:);
+    IMP imp_contains = [OFArray methodForSelector:sel_contains];
+    unsigned int numberOfUnseenFilms, tempArrayTracker = 0;
+    for (unsigned int i = 0; i < nextUserID; i++) {
+        currentUser = (User*)imp_getObject(users, sel_getObject, i);
+        numberOfUnseenFilms = nextFilmID - (unsigned int)imp_filmNUmber(currentUser, sel_filmNumber);
+        tempArray = malloc(sizeof(MLID) * numberOfUnseenFilms);
+        for (unsigned int j = 0; j < nextFilmID; j++) {
+                filmToTest = (Film*)imp_getObject(films, sel_getObject, j);
+            if ((bool)imp_contains((OFMutableArray*)imp_films(currentUser, sel_films), sel_contains, filmToTest)) {
+                (tempArray + tempArrayTracker)->compatabilityScore = compatabilityFunction((currentUser, filmToTest));
+                (tempArray + tempArrayTracker)->ID = j;
+            }
+        }
+        free (tempArray);
+    }
 }
 
 EXPORT int __stdcall elasticSearchUpdate() {

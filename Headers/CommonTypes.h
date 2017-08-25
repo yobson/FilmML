@@ -7,8 +7,13 @@ float userLearningMomentum = 0.2;
 
 unsigned int numberOfFilmSuggestions = 10;
 
+typedef union {
+    unsigned int *suggestedFilms;
+    unsigned int filmViews;
+} Specific;
+
 typedef struct {
     float *tasteScores;
     float *lastChanges;
-    unsigned int *suggestedFilms;
+    Specific specific;
 } MLType;

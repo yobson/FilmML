@@ -10,7 +10,6 @@
     FilmType defaultType;
     MLType mlData;
     OFMutableArray *usersSigWatched;
-    unsigned int numberOfUsers;
 }
 
 -(id) init;

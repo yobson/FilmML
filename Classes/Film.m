@@ -9,7 +9,6 @@
     FilmType defaultType;
     MLType mlData;
     OFMutableArray *usersSigWatched;
-    unsigned int numberOfUsers;
 */
 
 @implementation Film
@@ -21,7 +20,7 @@
         mlData.lastChanges   = calloc(numberOfFilmTypes, sizeof(float));
         filmName = [[OFString alloc] init];
         usersSigWatched = [[OFMutableArray alloc] init];
-        numberOfUsers = 0;
+        mlData.specific.filmViews = 0;
     }
     return self;
 }
@@ -55,16 +54,16 @@
 -(void) registerViewFromUser:(User*) u {
     if ([usersSigWatched containsObject:u]) { return; }
     [usersSigWatched addObject:u];
-    numberOfUsers++;
+    mlData.specific.filmViews++;
 }
 
 -(void) runML {
-    MLType **users = malloc(sizeof(MLType*) * numberOfUsers);
+    MLType **users = malloc(sizeof(MLType*) * mlData.specific.filmViews);
     IMP imp_getObject = [usersSigWatched methodForSelector:@selector(objectAtIndex:)];
-    for (int i = 0; i < numberOfUsers; i++) {
+    for (int i = 0; i < mlData.specific.filmViews; i++) {
         users[i] = [(User*) imp_getObject(usersSigWatched, @selector(objectAtIndex:), i) getMLType];
     } 
-    syncTastePreferences(users, &mlData, numberOfUsers);
+    syncTastePreferences(users, &mlData, mlData.specific.filmViews);
     free(users);
 }
 
