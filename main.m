@@ -38,6 +38,8 @@ OFMutableArray *films;
 OFMutableArray *users;
 ElasticSearch *ES;
 OFAutoreleasePool *pool;
+SEL sel_getObject;
+IMP imp_getObject;
 
 EXPORT int initFilmML() {
     printf("Init DLL\n");
@@ -48,6 +50,8 @@ EXPORT int initFilmML() {
     nextFilmID = 0;
     nextUserID = 0;
     userLife = 3;
+    sel_getObject = @selector(objectAtIndex:);
+    imp_getObject = [OFMutableArray methodForSelector:sel_getObject];
     return 0;
 }
 
@@ -73,13 +77,17 @@ EXPORT int addUser() {
 EXPORT void cleanUpUsers() {
     printf("Cleaning up users\n");
     User *temp;// = [[User alloc] init];
-    IMP imp_getObject = [User methodForSelector:@selector(objectAtIndex:)];
-    IMP imp_getDays = [User methodForSelector:@selector(daysSinceInit)];
+    SEL sel_daysSince = @selector(daysSinceInit);
+    IMP imp_getDays = [User methodForSelector:sel_daysSince];
     //[temp release];
     for (int i = 0; i < nextUserID; i++) {
-        temp = imp_getObject(users, @selector(objectAtIndex:), i);
-        if ((int)imp_getDays(temp, @selector(daysSinceInit)) > userLife) {
+        temp = imp_getObject(users, sel_getObject, i);
+        if ((int)imp_getDays(temp, sel_daysSince) > userLife) {
+            for (int j = 0; j < nextFilmID; j++) {
+                [(Film*)imp_getObject(films, sel_getObject, j) removeUserView: temp];
+            }
             [users replaceObjectAtIndex:i withObject:[OFNull null]];
+            
         }
     }
 }

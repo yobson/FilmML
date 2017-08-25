@@ -25,6 +25,7 @@
 -(MLType*) getMLType;
 
 -(void) registerViewFromUser:(User*) u;
+-(void) removeUserView:(User*) u;
 -(void) runML;
 -(void) reset;
 

@@ -58,6 +58,10 @@
     mlData.specific.filmViews++;
 }
 
+-(void) removeUserView:(User*) u {
+    [usersSigWatched removeObject:u];
+}
+
 -(void) runML {
     MLType **users = malloc(sizeof(MLType*) * mlData.specific.filmViews);
     IMP imp_getObject = [usersSigWatched methodForSelector:@selector(objectAtIndex:)];
