@@ -92,6 +92,24 @@
     return 1;
 }
 
+-(int) wipeAllUsers {
+    OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
+    [q appendString:indexName];
+    [q appendString:@"/user"];
+    request = [[OFHTTPRequest alloc] initWithURL:[OFURL URLWithString:q]];
+    [request setMethod:OF_HTTP_REQUEST_METHOD_DELETE];
+    OFHTTPResponse *r;
+    @try {
+        r = [client performRequest:request];
+    }
+    @catch (OFHTTPRequestFailedException *e) {
+        r = [e response];
+    }
+    [request release];
+    if ([r statusCode] == 200) { return 0; }
+    return 1;
+}
+
 -(int) addFilm:(unsigned int) id {
     OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
     [q appendString:indexName];

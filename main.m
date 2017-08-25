@@ -8,12 +8,14 @@
 #import <ObjFW/OFAutoreleasePool.h>
 #import <ObjFW/OFArray.h>
 #import <ObjFW/OFString.h>
+#import <ObjFW/OFNull.h>
 #import <stdio.h>
 //#import <string.h>
 
 #define EXPORT __declspec(dllexport)
 
 EXPORT int __stdcall initFilmML();
+EXPORT void __stdcall onExit();
 EXPORT int __stdcall addFilm(const char *filmName, FilmType defaultFilmType);
 EXPORT int __stdcall addUser();
 EXPORT void __stdcall cleanUpUsers();
@@ -35,18 +37,22 @@ unsigned int userLife;
 OFMutableArray *films;
 OFMutableArray *users;
 ElasticSearch *ES;
+OFAutoreleasePool *pool;
 
 EXPORT int initFilmML() {
     printf("Init DLL\n");
-    OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+    pool = [[OFAutoreleasePool alloc] init];
 
     films = [[OFMutableArray alloc] init];
     users = [[OFMutableArray alloc] init];
     nextFilmID = 0;
     nextUserID = 0;
     userLife = 3;
-    [pool drain];
     return 0;
+}
+
+EXPORT void onExit() {
+    [pool drain];
 }
 
 EXPORT int addFilm(const char *filmName, FilmType defaultFilmType) {
@@ -73,7 +79,7 @@ EXPORT void cleanUpUsers() {
     for (int i = 0; i < nextUserID; i++) {
         temp = imp_getObject(users, @selector(objectAtIndex:), i);
         if ((int)imp_getDays(temp, @selector(daysSinceInit)) > userLife) {
-            [users removeObjectAtIndex:i];
+            [users replaceObjectAtIndex:i withObject:[OFNull null]];
         }
     }
 }
@@ -170,15 +176,25 @@ EXPORT int __stdcall elasticSearchUpdate() {
     IMP imp_getObject = [User methodForSelector:sel_getObject];
     IMP imp_getUserFilmSuggestion = [User methodForSelector:sel_getUserFilmSuggestion];
     for (int i = 0; i < nextUserID; i++) {
-        [ES updateUserOfID:i filmSuggestionsTo:(unsigned int*)imp_getUserFilmSuggestion(
-            (User*)imp_getObject(users, sel_getObject, i), sel_getUserFilmSuggestion) 
-            ofLength:numberOfFilmSuggestions];
+        if (imp_getObject(users, sel_getObject, i) != [OFNull null]) {
+            [ES updateUserOfID:i filmSuggestionsTo:(unsigned int*)imp_getUserFilmSuggestion(
+                (User*)imp_getObject(users, sel_getObject, i), sel_getUserFilmSuggestion) 
+                ofLength:numberOfFilmSuggestions];
+        }
     }
     return 0;
 }
 
-EXPORT int __stdcall elasticSearchClean() {
-    return 0;
+EXPORT int elasticSearchClean() {
+    if ([ES wipeAllUsers]) { return 1; }
+    SEL sel_getObject = @selector(objectAtIndex:);
+    IMP imp_getObject = [User methodForSelector:sel_getObject];
+    for (int i = 0; i < nextUserID; i++) {
+        if (imp_getObject(users, sel_getObject, i) != [OFNull null]) {
+            [ES addUser:i];
+        }
+    }
+    return elasticSearchUpdate();
 }
 
 EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex) {
