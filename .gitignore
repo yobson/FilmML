@@ -76,3 +76,7 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+CSLibrary/FilmML/bin/
+CSLibrary/FilmML/obj/
+CSLibrary/FilmML/obj/Debug/CoreCompileInputs.cache
