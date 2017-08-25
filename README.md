@@ -76,7 +76,7 @@ where n is number of film views, k is a constant that affects how influential th
 ## Todo
 - [x] Build windows enviroment
 - [x] Build simple ML algorythm
-- [ ] Interface with Elasticsearch
+- [x] Interface with Elasticsearch (Unpolished... very unpolished... but this is R&D)
 - [ ] Build dll and c# library for ASP.net
 - [ ] Port to .net core as well
 
