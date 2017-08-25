@@ -22,6 +22,7 @@
 -(void) setTasteScoreOf:(FilmType) t to:(float) f;
 -(float) getDeafultType;
 -(float) getTasteScoreFor:(FilmType) t;
+-(MLType*) getMLType;
 
 -(void) registerViewFromUser:(User*) u;
 -(void) runML;

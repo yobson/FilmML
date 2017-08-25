@@ -49,6 +49,7 @@
 -(float) getDeafultType { return defaultType; }
 -(float) getLevelOf:(FilmType) t { return mlData.tasteScores[t]; }
 -(float) getTasteScoreFor:(FilmType) t { return mlData.tasteScores[t]; }
+-(MLType*) getMLType { return &mlData; }
 -(void) setTasteScoreOf:(FilmType) t to:(float) f { updateTaste(&f, t, &mlData.tasteScores); }
 
 -(void) registerViewFromUser:(User*) u {

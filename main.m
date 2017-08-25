@@ -2,11 +2,14 @@
 #import "Headers/User.h"
 #import "Headers/CommonTypes.h"
 #import "Headers/ElasticSearch.h"
+#import "C/Common.m"
+#import "C/BinaryTree.m"
 #import <ObjFW/OFObject.h>
 #import <ObjFW/OFAutoreleasePool.h>
 #import <ObjFW/OFArray.h>
 #import <ObjFW/OFString.h>
 #import <stdio.h>
+//#import <string.h>
 
 #define EXPORT __declspec(dllexport)
 
@@ -122,36 +125,42 @@ EXPORT void __stdcall triggerfullSystemML() {
     for (int i = 0; i < nextFilmID; i++){
         imp_runML((Film*)imp_getObject(films, sel_getObject, i), sel_runML);
     }
-    MLType *finalUserFilmArray;
+    unsigned int *finalUserFilmArray;
     Film *filmToTest;
     User *currentUser;
     finalUserFilmArray = malloc(sizeof(unsigned int) * numberOfFilmSuggestions);
 
-    typedef struct {
-        float compatabilityScore;
-        unsigned int ID;
-    } MLID;
 
-    MLID *tempArray;
     SEL sel_filmNumber = @selector(getNumberOfWatchedFilms);
     IMP imp_filmNUmber = [User methodForSelector:sel_filmNumber];
     SEL sel_films = @selector(getWatchedFilms);
     IMP imp_films = [User methodForSelector:sel_films];
     SEL sel_contains = @selector(containsObject:);
     IMP imp_contains = [OFArray methodForSelector:sel_contains];
-    unsigned int numberOfUnseenFilms, tempArrayTracker = 0;
+    SEL sel_getMLData = @selector(getMLType);
+    IMP imp_getMLDataFilm = [Film methodForSelector:sel_getMLData];
+    IMP imp_getMLDataUser = [User methodForSelector:sel_getMLData];
+    unsigned int numberOfUnseenFilms;
     for (unsigned int i = 0; i < nextUserID; i++) {
         currentUser = (User*)imp_getObject(users, sel_getObject, i);
         numberOfUnseenFilms = nextFilmID - (unsigned int)imp_filmNUmber(currentUser, sel_filmNumber);
-        tempArray = malloc(sizeof(MLID) * numberOfUnseenFilms);
+        BTree *tree = malloc(sizeof(BTree));
+        MLType* userData = (MLType*)imp_getMLDataUser(currentUser, sel_getMLData);
+        MLType* filmData = (MLType*)imp_getMLDataFilm(filmToTest, sel_getMLData);
         for (unsigned int j = 0; j < nextFilmID; j++) {
                 filmToTest = (Film*)imp_getObject(films, sel_getObject, j);
             if ((bool)imp_contains((OFMutableArray*)imp_films(currentUser, sel_films), sel_contains, filmToTest)) {
-                (tempArray + tempArrayTracker)->compatabilityScore = compatabilityFunction((currentUser, filmToTest));
-                (tempArray + tempArrayTracker)->ID = j;
+                addToTree(tree,
+                          compatabilityFunction(userData, filmData),
+                          j);
             }
         }
-        free (tempArray);
+        topN(numberOfFilmSuggestions, tree, &finalUserFilmArray);
+        if (userData->specific.suggestedFilms == NULL) {
+            userData->specific.suggestedFilms = malloc(sizeof(unsigned int) * numberOfFilmSuggestions);
+        }
+        memcpy(userData->specific.suggestedFilms, finalUserFilmArray, sizeof(unsigned int) * numberOfFilmSuggestions);
+        deleteTree(tree);
     }
 }
 
