@@ -7,28 +7,29 @@ using System.Runtime.InteropServices;
 
 namespace FilmML
 {
-    public class DLL
+    internal class DLL
     {
         public const string DllName = "libfilmML.dll";
 
-/*
-EXPORT int __stdcall initFilmML();
-EXPORT void __stdcall onExit();
-EXPORT int __stdcall addFilm(const char *filmName, FilmType defaultFilmType);
-EXPORT int __stdcall addUser();
-EXPORT void __stdcall cleanUpUsers();
-EXPORT int __stdcall dllTest();
-EXPORT int __stdcall setFilmLearningMomentum(float f);
-EXPORT int __stdcall setUserLearningMomentum(float f);
-EXPORT int __stdcall setFilmLearningRate(float f);
-EXPORT int __stdcall setUserLearningRate(float f);
-EXPORT void __stdcall setNumberOfFilmSuggestions(unsigned int s);
-EXPORT void __stdcall registerFilmView(unsigned int userID, unsigned int filmID);
-EXPORT void __stdcall triggerfullSystemML();
-EXPORT int __stdcall elasticSearchUpdate();
-EXPORT int __stdcall elasticSearchClean();
-EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
-*/
+        /*
+        EXPORT int __stdcall initFilmML();
+        EXPORT void __stdcall onExit();
+        EXPORT int __stdcall addFilm(const char *filmName, FilmType defaultFilmType);
+        EXPORT int __stdcall addUser();
+        EXPORT void __stdcall cleanUpUsers();
+        EXPORT int __stdcall dllTest();
+        EXPORT int __stdcall setFilmLearningMomentum(float f);
+        EXPORT int __stdcall setUserLearningMomentum(float f);
+        EXPORT int __stdcall setFilmLearningRate(float f);
+        EXPORT int __stdcall setUserLearningRate(float f);
+        EXPORT void __stdcall setUserLife(unsigned int l);
+        EXPORT void __stdcall setNumberOfFilmSuggestions(unsigned int s);
+        EXPORT void __stdcall registerFilmView(unsigned int userID, unsigned int filmID);
+        EXPORT void __stdcall triggerfullSystemML();
+        EXPORT int __stdcall elasticSearchUpdate();
+        EXPORT int __stdcall elasticSearchClean();
+        EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
+        */
 
 #pragma warning disable IDE1006 // Naming Styles
         [DllImport(DllName)]
@@ -52,6 +53,8 @@ EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
         [DllImport(DllName)]
         public static extern int setUserLearningRate(float f);
         [DllImport(DllName)]
+        public static extern void setUserLife(uint l);
+        [DllImport(DllName)]
         public static extern void setNumberOfFilmSuggestions(uint s);
         [DllImport(DllName)]
         public static extern void registerFilmView(uint userID, uint filmID);
@@ -69,5 +72,11 @@ EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
 
     public class FilmML
     {
+        public void SetupFilmML(uint userLife = 5)
+        {
+            DLL.initFilmML();
+            DLL.setUserLife(userLife);
+        }
+
     }
 }

@@ -24,6 +24,7 @@ EXPORT int __stdcall setFilmLearningMomentum(float f);
 EXPORT int __stdcall setUserLearningMomentum(float f);
 EXPORT int __stdcall setFilmLearningRate(float f);
 EXPORT int __stdcall setUserLearningRate(float f);
+EXPORT void __stdcall setUserLife(unsigned int l);
 EXPORT void __stdcall setNumberOfFilmSuggestions(unsigned int s);
 EXPORT void __stdcall registerFilmView(unsigned int userID, unsigned int filmID);
 EXPORT void __stdcall triggerfullSystemML();
@@ -33,7 +34,6 @@ EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
 
 unsigned int nextFilmID;
 unsigned int nextUserID;
-unsigned int userLife;
 OFMutableArray *films;
 OFMutableArray *users;
 ElasticSearch *ES;
@@ -49,7 +49,6 @@ EXPORT int initFilmML() {
     users = [[OFMutableArray alloc] init];
     nextFilmID = 0;
     nextUserID = 0;
-    userLife = 3;
     sel_getObject = @selector(objectAtIndex:);
     imp_getObject = [OFMutableArray methodForSelector:sel_getObject];
     return 0;
@@ -82,13 +81,15 @@ EXPORT void cleanUpUsers() {
     //[temp release];
     for (int i = 0; i < nextUserID; i++) {
         temp = imp_getObject(users, sel_getObject, i);
-        if ((int)imp_getDays(temp, sel_daysSince) > userLife) {
-            for (int j = 0; j < nextFilmID; j++) {
-                [(Film*)imp_getObject(films, sel_getObject, j) removeUserView: temp];
+        if ((id)temp != [OFNull null]){
+            if ((int)imp_getDays(temp, sel_daysSince) > userLife) {
+                for (int j = 0; j < nextFilmID; j++) {
+                    [(Film*)imp_getObject(films, sel_getObject, j) removeUserView: temp];
+                }
+                [users replaceObjectAtIndex:i withObject:[OFNull null]];
             }
-            [users replaceObjectAtIndex:i withObject:[OFNull null]];
-            
         }
+        
     }
 }
 
@@ -122,6 +123,10 @@ EXPORT int __stdcall setUserLearningRate(float f) {
 
 EXPORT void setNumberOfFilmSuggestions(unsigned int s) {
     numberOfFilmSuggestions = s;
+}
+
+EXPORT void setUserLife(unsigned int l) {
+    userLife = l;
 }
 
 EXPORT void registerFilmView(unsigned int userID, unsigned int filmID) {

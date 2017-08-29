@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmML", "FilmML\FilmML.csproj", "{92CE65DE-3CE9-4E10-A561-E7C708993B0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{92CE65DE-3CE9-4E10-A561-E7C708993B0B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92CE65DE-3CE9-4E10-A561-E7C708993B0B}.Release|x64.ActiveCfg = Release|x64
 		{92CE65DE-3CE9-4E10-A561-E7C708993B0B}.Release|x64.Build.0 = Release|x64
+		{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}.Debug|x64.Build.0 = Debug|Any CPU
+		{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}.Release|x64.ActiveCfg = Release|Any CPU
+		{BEE3C8E2-DA74-4B38-A483-A7F424E4E565}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
