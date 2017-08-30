@@ -42,15 +42,18 @@ SEL sel_getObject;
 IMP imp_getObject;
 
 EXPORT int initFilmML() {
-    printf("Init DLL\n");
-    pool = [[OFAutoreleasePool alloc] init];
-
-    films = [[OFMutableArray alloc] init];
-    users = [[OFMutableArray alloc] init];
-    nextFilmID = 0;
-    nextUserID = 0;
-    sel_getObject = @selector(objectAtIndex:);
-    imp_getObject = [OFMutableArray methodForSelector:sel_getObject];
+    if (!initialised) {
+        printf("Init DLL\n");
+        pool = [[OFAutoreleasePool alloc] init];
+        ES = [[ElasticSearch alloc] init];
+        films = [[OFMutableArray alloc] init];
+        users = [[OFMutableArray alloc] init];
+        nextFilmID = 0;
+        nextUserID = 0;
+        sel_getObject = @selector(objectAtIndex:);
+        imp_getObject = [OFMutableArray methodForSelector:sel_getObject];
+        initialised = 1;
+    }
     return 0;
 }
 
@@ -213,7 +216,8 @@ EXPORT int elasticSearchClean() {
 EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex) {
     [ES setServerUrl:[OFString stringWithUTF8String:esURL]];
     [ES setIndexName:[OFString stringWithUTF8String:esIndex]];
-    if ([ES checkForIndex]) { return 1; }
-    if (![ES setupIndex]) { return 1; }
+    if (![ES checkForIndex]) { return 0; }
+    if ([ES setupIndex]) { return 1; }
+    printf("Done\n");
     return 0;
 }

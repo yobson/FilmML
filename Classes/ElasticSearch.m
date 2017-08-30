@@ -21,7 +21,7 @@
 
 -(id) initWithUrl:(OFString*) url {
     [self init];
-    baseURL = baseURL = [OFString stringWithFormat:@"%s%@%s",([url hasPrefix:@"http://"] ? "" : "http://"), url,([url hasSuffix:@"/"] ? "" : "/")];
+    [self setServerUrl:url];
     return self;
 }
 
@@ -32,7 +32,7 @@
 }
 
 
--(void) setServerUrl:(OFString*) s { baseURL = [OFString stringWithString:s]; }
+-(void) setServerUrl:(OFString*) url { baseURL = [OFString stringWithFormat:@"%s%@%s",([url hasPrefix:@"http://"] ? "" : "http://"), url,([url hasSuffix:@"/"] ? "" : "/")]; }
 -(void) setIndexName:(OFString*) s { indexName = [OFString stringWithString:s]; }
 -(OFString*) getIndexName { return indexName; }
 -(OFString*) getServerUrl { return baseURL; }
@@ -55,6 +55,7 @@
 }
 
 -(int) setupIndex {
+    printf("Setting up elasticsearch index: ");
     if (![self checkForIndex]) { return 1; }
     OFMutableString *q = [[OFMutableString alloc] initWithString:baseURL];
     [q appendString:indexName];

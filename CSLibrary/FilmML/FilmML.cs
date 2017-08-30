@@ -72,10 +72,34 @@ namespace FilmML
 
     public class FilmML
     {
-        public void SetupFilmML(uint userLife = 5)
+        public void SetupFilmML(
+                uint UserLife = 5,
+                float UserLearningMomentum = 0.2f,
+                float FilmLearningMomentum = 0.2f,
+                float UserLearningRate = 0.3f,
+                float FilmLearningRate = 0.1f,
+                uint NumberOfFilmSugestions = 10,
+                string ElasticSearchURL = "127.0.0.1:9200",
+                string ElasticSearchIndex = "filmml"
+            )
         {
             DLL.initFilmML();
-            DLL.setUserLife(userLife);
+            DLL.setUserLife(UserLife);
+            DLL.setUserLearningMomentum(UserLearningMomentum);
+            DLL.setFilmLearningMomentum(FilmLearningMomentum);
+            DLL.setUserLearningRate(UserLearningRate);
+            DLL.setFilmLearningRate(FilmLearningRate);
+            DLL.setNumberOfFilmSuggestions(NumberOfFilmSugestions);
+            if (DLL.elasticSearchSetup(ElasticSearchURL, ElasticSearchIndex) != 0)
+            {
+                Console.WriteLine("Something went wrong connecting to elastic search!");
+            }
+        }
+
+        public int test()
+        {
+            Console.WriteLine("Hello From FilmMLCS");
+            return DLL.dllTest();
         }
 
     }
