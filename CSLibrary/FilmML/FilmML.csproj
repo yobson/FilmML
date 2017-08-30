@@ -58,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums.cs" />
+    <Compile Include="Film.cs" />
     <Compile Include="FilmML.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

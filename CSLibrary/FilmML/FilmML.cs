@@ -29,6 +29,7 @@ namespace FilmML
         EXPORT int __stdcall elasticSearchUpdate();
         EXPORT int __stdcall elasticSearchClean();
         EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
+        EXPORT int __stdcall addFilmsToElasticSearch();
         */
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -37,7 +38,7 @@ namespace FilmML
         [DllImport(DllName)]
         public static extern void onExit();
         [DllImport(DllName)]
-        public static extern int addFilm(string filmName, int defaultFilmType);
+        public static extern int addFilm(string filmName, uint defaultFilmType);
         [DllImport(DllName)]
         public static extern int addUser();
         [DllImport(DllName)]
@@ -66,6 +67,10 @@ namespace FilmML
         public static extern int elasticSearchClean();
         [DllImport(DllName)]
         public static extern int elasticSearchSetup([MarshalAs(UnmanagedType.LPStr)]string esURL, [MarshalAs(UnmanagedType.LPStr)]string esIndex);
+        [DllImport(DllName)]
+        public static extern int addFilmsToElasticSearch();
+        [DllImport(DllName)]
+        public static extern int addUsersToElasticSearch();
 #pragma warning restore IDE1006
 
     }
@@ -94,6 +99,30 @@ namespace FilmML
             {
                 Console.WriteLine("Something went wrong connecting to elastic search!");
             }
+        }
+
+        public void AddFilm(Film f, bool sync = true)
+        {
+            f.ID = DLL.addFilm(f.Name, (uint)f.DefaultType);
+            if (sync) { DLL.addFilmsToElasticSearch(); }
+        }
+
+        public int AddFilms(List<Film> f)
+        {
+            f.ForEach(a => AddFilm(a, false));
+            return DLL.addFilmsToElasticSearch();
+        }
+
+        public void AddUser(User u, bool sync = true)
+        {
+            u.ID = DLL.addUser();
+            if (sync) { DLL.addUsersToElasticSearch(); }
+        }
+
+        public int AddUsers(List<User> u)
+        {
+            u.ForEach(a => AddUser(a, false));
+            return DLL.addUsersToElasticSearch();
         }
 
         public int test()

@@ -126,10 +126,11 @@
     }
     @catch (OFHTTPRequestFailedException *e) {
         r = [e response];
+        printf("Error adding film %d. Error code: %u\n", id, [r statusCode]);
+        return 1;
     }
     [request release];
-    if ([r statusCode] == 200) { return 0; }
-    return 1;
+    return 0;
 }
 
 -(int) addUser:(unsigned int) id {

@@ -31,6 +31,8 @@ EXPORT void __stdcall triggerfullSystemML();
 EXPORT int __stdcall elasticSearchUpdate();
 EXPORT int __stdcall elasticSearchClean();
 EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
+EXPORT int __stdcall addFilmsToElasticSearch();
+EXPORT int __stdcall addUsersToElasticSearch();
 
 unsigned int nextFilmID;
 unsigned int nextUserID;
@@ -40,6 +42,8 @@ ElasticSearch *ES;
 OFAutoreleasePool *pool;
 SEL sel_getObject;
 IMP imp_getObject;
+unsigned int ESFilmTracker;
+unsigned int ESUserTracker;
 
 EXPORT int initFilmML() {
     if (!initialised) {
@@ -53,6 +57,8 @@ EXPORT int initFilmML() {
         sel_getObject = @selector(objectAtIndex:);
         imp_getObject = [OFMutableArray methodForSelector:sel_getObject];
         initialised = 1;
+        ESFilmTracker = 0;
+        ESUserTracker = 0;
     }
     return 0;
 }
@@ -220,4 +226,22 @@ EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex) {
     if ([ES setupIndex]) { return 1; }
     printf("Done\n");
     return 0;
+}
+
+EXPORT int addFilmsToElasticSearch() {
+    int ret = 0;
+    for (unsigned int i = ESFilmTracker; i < nextFilmID; i++) {
+        ret += [ES addFilm:i];
+        ESFilmTracker++;
+    }
+    return ret;
+}
+
+EXPORT int addUsersToElasticSearch() {
+    int ret = 0;
+    for (unsigned int i = ESUserTracker; i < nextUserID; i++) {
+        ret += [ES addUser:i];
+        ESFilmTracker++;
+    }
+    return ret;
 }
