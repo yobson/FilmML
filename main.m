@@ -14,33 +14,33 @@
 
 #define EXPORT __declspec(dllexport)
 
-EXPORT int __stdcall initFilmML();
-EXPORT void __stdcall onExit();
-EXPORT int __stdcall addFilm(const char *filmName, FilmType defaultFilmType);
-EXPORT int __stdcall addUser();
-EXPORT void __stdcall cleanUpUsers();
-EXPORT int __stdcall dllTest();
-EXPORT int __stdcall setFilmLearningMomentum(float f);
-EXPORT int __stdcall setUserLearningMomentum(float f);
-EXPORT int __stdcall setFilmLearningRate(float f);
-EXPORT int __stdcall setUserLearningRate(float f);
-EXPORT void __stdcall setUserLife(unsigned int l);
-EXPORT void __stdcall setNumberOfFilmSuggestions(unsigned int s);
-EXPORT void __stdcall registerFilmView(unsigned int userID, unsigned int filmID);
-EXPORT void __stdcall triggerfullSystemML();
-EXPORT int __stdcall elasticSearchUpdate();
-EXPORT int __stdcall elasticSearchClean();
-EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex);
-EXPORT int __stdcall addFilmsToElasticSearch();
-EXPORT int __stdcall addUsersToElasticSearch();
+EXPORT int __stdcall initFilmML(); // Initialisation function of DLL
+EXPORT void __stdcall onExit(); // Function to call at exit to clean up memory (not really needed, the heap is emptied on exit anyway)
+EXPORT int __stdcall addFilm(const char *filmName, FilmType defaultFilmType); // Adds a film to the DLL
+EXPORT int __stdcall addUser(); // Adds user to DLL
+EXPORT void __stdcall cleanUpUsers(); // Deletes all users older than the life span of a user;
+EXPORT int __stdcall dllTest(); // Just a test function
+EXPORT int __stdcall setFilmLearningMomentum(float f); // This sets the learning momentum - a value between 1 and 0 that determins how the last change influences the curernt change
+EXPORT int __stdcall setUserLearningMomentum(float f); // ditto
+EXPORT int __stdcall setFilmLearningRate(float f); // the amount that the film "learns"
+EXPORT int __stdcall setUserLearningRate(float f); // ditto
+EXPORT void __stdcall setUserLife(unsigned int l); // The number of days that a user is alive for
+EXPORT void __stdcall setNumberOfFilmSuggestions(unsigned int s); // number of suggestions each user gets.
+EXPORT void __stdcall registerFilmView(unsigned int userID, unsigned int filmID); // Forms connection between film and user
+EXPORT void __stdcall triggerfullSystemML(); // Does the learning for all connected users and films
+EXPORT int __stdcall elasticSearchUpdate(); // Updates the elastic seach index with the ML data
+EXPORT int __stdcall elasticSearchClean(); // Cleans out dead users
+EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex); // Connects to ES and if an index doesn't exist, makes one
+EXPORT int __stdcall addFilmsToElasticSearch(); // Syncs the list of films in the DLL with elastic search;
+EXPORT int __stdcall addUsersToElasticSearch(); //   "    "   "    "  users "  "   "    "     "       "
 
-unsigned int nextFilmID;
-unsigned int nextUserID;
-OFMutableArray *films;
-OFMutableArray *users;
-ElasticSearch *ES;
-OFAutoreleasePool *pool;
-SEL sel_getObject;
+unsigned int nextFilmID;  //Number of films in the DLL / ID of next film
+unsigned int nextUserID; // Number of users in the DLL / ID of next user
+OFMutableArray *films;  //  This is an array that holds all of the films 
+OFMutableArray *users; //   This is an array that holds all of the users
+ElasticSearch *ES;    //    This is object that deals with elastic search operations
+OFAutoreleasePool *pool; // This is an objective c thing that (I think) makes unused objects free their memory (using reference counting)
+SEL sel_getObject; // See ThingsTooLongForTheComments.md
 IMP imp_getObject;
 unsigned int ESFilmTracker;
 unsigned int ESUserTracker;
@@ -192,7 +192,7 @@ EXPORT void __stdcall triggerfullSystemML() {
     }
 }
 
-EXPORT int __stdcall elasticSearchUpdate() {
+EXPORT int elasticSearchUpdate() {
     SEL sel_getUserFilmSuggestion = @selector(getFilmSelection);
     SEL sel_getObject = @selector(objectAtIndex:);
     IMP imp_getObject = [User methodForSelector:sel_getObject];
