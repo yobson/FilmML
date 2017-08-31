@@ -32,10 +32,10 @@ This is the most intensive part of the program and probably needs optimizing mas
 
 ```objective-c
 currentUser = (User*)imp_getObject(users, sel_getObject, i);
-        numberOfUnseenFilms = nextFilmID - (unsigned int)imp_filmNUmber(currentUser, sel_filmNumber);
-        BTree *tree = NULL;
-        MLType* userData = (MLType*)imp_getMLDataUser(currentUser, sel_getMLData);
-        MLType* filmData = (MLType*)imp_getMLDataFilm(filmToTest, sel_getMLData);
+numberOfUnseenFilms = nextFilmID - (unsigned int)imp_filmNUmber(currentUser, sel_filmNumber);
+BTree *tree = NULL;
+MLType* userData = (MLType*)imp_getMLDataUser(currentUser, sel_getMLData);
+MLType* filmData = (MLType*)imp_getMLDataFilm(filmToTest, sel_getMLData);
 ```
 
 Next, it cycles through all the films and runs another loop for each. In this loop, we see if the a user has seen the given film, if they haven't we apply the compatibility function to both and add it's ID to a binary tree. By adding it to a binary tree, we don't have to order the list after by compatibility score, it is already ordered. Once this is done, we then call ``` void topN(...); ```. This should get the top N IDs in the binary tree and pop them in an array that is passed by reference to the function. We finally add this to the user's film suggestion list and delete the tree. The next user in the list is then used.
