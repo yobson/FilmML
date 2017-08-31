@@ -42,7 +42,7 @@ Next, it cycles through all the films and runs another loop for each. In this lo
 
 ## BinaryTree.m
 
-This is a simple class for building binary trees that supports a `float` ranking system and an `unsigned int `  to place an index of a film or user. There is a function to add data into the tree defined like this:
+This is a simple static c library for building binary trees that supports a `float` ranking system and an `unsigned int `  to place an index of a film or user. There is a function to add data into the tree defined like this:
 
 ``` c
 void addToTree(BTree *tree, float ranking, unsigned int data);
@@ -74,3 +74,36 @@ void deleteTree(BTree *tree);
 ```
 
 Pretty self explanatory.
+
+## Common.m
+
+This is a file where common, intensive tasks are placed. By design, although it has a .m extension, only c code is placed in this file. This is to avoid any of it running at a sub-optimal speed.
+
+### Sync Taste Preferences
+
+This is a function that works out the delta vector and applies it to the film and user taste score vectors. It is made up of three main for loops and two sub for loops inside the first and last main for loop. The first for loop is as follows:
+
+```c
+for (unsigned int i = 0; i < userCount; i++) {
+  uArray = users[i]->tasteScores;
+  for (int j = 0; j < numberOfFilmTypes; j++) {
+     deltas[j] += (uArray[j] - film->tasteScores[j]) / userCount;
+  }
+}
+```
+
+It iterates through all the users and builds a delta vector. This is made up of the taste scores of a user - the taste score of a film. The input is only for users that have watched a film. It then divides the vector by the number of users because it wants to find an average change for the film. It does this for all users attached to that film. It can be summarized like this 
+$$
+\vec{\Delta} = \sum^{n}_{i = 1} \frac{\vec{f} - \vec{u}_i}{n}
+$$
+The next for loop simply applies the delta vector to the film taste score vector using the learning function which can be defined as:
+$$
+\vec{f}_{t+1} = \vec{f}_{t} + \vec{\Delta} \cdot v \cdot (1-\eta) + \eta \cdot \vec{f}_{t-1} 
+$$
+where
+
+- $\vec{f}$ is the film taste score vector
+- ​
+
+
+

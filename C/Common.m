@@ -6,7 +6,7 @@ This file is where common static tasks (sometimes interclass) can implemented. I
 high performace tasks becuase it is in c and not objc. Only c types can be passed in.
 */
 
-void updateTaste(float *f, FilmType t, float **array) {
+void updateTaste(float *f, FilmType t, float **array) { // Not really used. But old way of setting the value of one taste score without changing the sum of 1
     if (*f > 1) { return; }
     float delta = *f - *array[t];
     delta /= numberOfFilmTypes - 1;
@@ -16,7 +16,7 @@ void updateTaste(float *f, FilmType t, float **array) {
     *array[t] = *f;
 }
 
-void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) {
+void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) { // See ThingsTooLongForTheComments.md
     float change, *uArray, *deltas = calloc(numberOfFilmTypes, sizeof(float));
     for (unsigned int i = 0; i < userCount; i++) {
         uArray = users[i]->tasteScores;
@@ -33,9 +33,9 @@ void syncTastePreferences(MLType **users, MLType *film, unsigned int userCount) 
     for (unsigned int i = 0; i < userCount; i++) {
         uArray = users[i]->tasteScores;
         for (int j = 0; j < numberOfFilmTypes; j++) {
-            change = deltas[j] * userLearningRate * (1-userLearningMomentum) -
+            change = -deltas[j] * userLearningRate * (1-userLearningMomentum) +
             userLearningMomentum * users[i]->lastChanges[j];
-            uArray[j] -= change;
+            uArray[j] += change;
             users[i]->lastChanges[j] = change;
         }
     }
