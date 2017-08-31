@@ -39,3 +39,38 @@ MLType* filmData = (MLType*)imp_getMLDataFilm(filmToTest, sel_getMLData);
 ```
 
 Next, it cycles through all the films and runs another loop for each. In this loop, we see if the a user has seen the given film, if they haven't we apply the compatibility function to both and add it's ID to a binary tree. By adding it to a binary tree, we don't have to order the list after by compatibility score, it is already ordered. Once this is done, we then call ``` void topN(...); ```. This should get the top N IDs in the binary tree and pop them in an array that is passed by reference to the function. We finally add this to the user's film suggestion list and delete the tree. The next user in the list is then used.
+
+## BinaryTree.m
+
+This is a simple class for building binary trees that supports a `float` ranking system and an `unsigned int `  to place an index of a film or user. There is a function to add data into the tree defined like this:
+
+``` c
+void addToTree(BTree *tree, float ranking, unsigned int data);
+```
+
+It is a recursive function. meaning that you pass in a pointer to the top of the tree and it will call itself over and over again changing where it perceives the top of the tree until it finds somewhere to put your data. The input is defined as follows
+
+- *tree - a reference to the top of the tree
+- ranking - this is the float that is used to sort the items in the tree. The position in the tree is determined by this number
+- data - in this case, its a stupid variable name for the ID that we are going to store in the tree
+
+Next we have two functions for finding the top n values in our tree. Here are the definitions:
+
+```c
+void _TopN(BTree *tree, unsigned int **out);
+void topN(unsigned int n, BTree *tree, unsigned int **out);
+```
+
+`_TopN` is not a function to be called, designed for internal use only. It is the function that does the work when finding the top n items in a list. It has less arguments because it stores most state in global variables so that different branches of recursive calling can access the newest state information. `topN` is not a recursive function, but simply a function that sets up the global variables for `_TopN` and calls it. 
+
+- n - the number of values to be returned (the highest n values in the tree)
+- *tree - a reference tree to use
+- **out - a reference to the output array.
+
+Finally, a function that deletes the tree:
+
+```c
+void deleteTree(BTree *tree);
+```
+
+Pretty self explanatory.
