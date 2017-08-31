@@ -1,5 +1,7 @@
 #import <stdlib.h>
 
+// See ThingsTooLongForTheComments.md for a description
+
 struct Tree {
     float ranking;
     struct Tree *left;
