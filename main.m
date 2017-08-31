@@ -200,37 +200,35 @@ EXPORT void triggerfullSystemML() {
 }
 
 EXPORT int elasticSearchUpdate() {
-    SEL sel_getUserFilmSuggestion = @selector(getFilmSelection);
-    SEL sel_getObject = @selector(objectAtIndex:);
-    IMP imp_getObject = [User methodForSelector:sel_getObject];
+    SEL sel_getUserFilmSuggestion = @selector(getFilmSelection); // This optimisation will be the equivalent of [User getFilmSelection]
     IMP imp_getUserFilmSuggestion = [User methodForSelector:sel_getUserFilmSuggestion];
+    unsigned int *suggestedFilms;
     for (int i = 0; i < nextUserID; i++) {
         if (imp_getObject(users, sel_getObject, i) != [OFNull null]) {
-            [ES updateUserOfID:i filmSuggestionsTo:(unsigned int*)imp_getUserFilmSuggestion(
-                (User*)imp_getObject(users, sel_getObject, i), sel_getUserFilmSuggestion) 
-                ofLength:numberOfFilmSuggestions];
+            suggestedFilms = (unsigned int*)imp_getUserFilmSuggestion((User*)imp_getObject(users, sel_getObject, i), sel_getUserFilmSuggestion);
+            if (suggestedFilms != NULL) {
+                [ES updateUserOfID:i filmSuggestionsTo:suggestedFilms ofLength:numberOfFilmSuggestions];
+            }
         }
     }
     return 0;
 }
 
 EXPORT int elasticSearchClean() {
-    if ([ES wipeAllUsers]) { return 1; }
-    SEL sel_getObject = @selector(objectAtIndex:);
-    IMP imp_getObject = [User methodForSelector:sel_getObject];
+    if ([ES wipeAllUsers]) { return 1; } // Removes all users if it can
     for (int i = 0; i < nextUserID; i++) {
-        if (imp_getObject(users, sel_getObject, i) != [OFNull null]) {
-            [ES addUser:i];
+        if (imp_getObject(users, sel_getObject, i) != [OFNull null]) { // Ignores "dead" users
+            [ES addUser:i]; // Adds all other users to the elastic search instance
         }
     }
-    return elasticSearchUpdate();
-}
+    return elasticSearchUpdate(); // Adds their suggested film arrays
+} // Now all dead users are freed from elastic search
 
-EXPORT int __stdcall elasticSearchSetup(char *esURL, char *esIndex) {
+EXPORT int elasticSearchSetup(char *esURL, char *esIndex) {
     [ES setServerUrl:[OFString stringWithUTF8String:esURL]];
     [ES setIndexName:[OFString stringWithUTF8String:esIndex]];
-    if (![ES checkForIndex]) { return 0; }
-    if ([ES setupIndex]) { return 1; }
+    if (![ES checkForIndex]) { return 0; } // [ElasticSearch checkForIndex] returns 0 if 200 status code is recived (200 if it exists). This will exit if the index is already there
+    if ([ES setupIndex]) { return 1; } // Adds index and types. This will be off loaded into the CS at some point
     printf("Done\n");
     return 0;
 }
