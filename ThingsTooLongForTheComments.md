@@ -92,7 +92,8 @@ for (unsigned int i = 0; i < userCount; i++) {
 }
 ```
 
-It iterates through all the users and builds a delta vector. This is made up of the taste scores of a user - the taste score of a film. The input is only for users that have watched a film. It then divides the vector by the number of users because it wants to find an average change for the film. It does this for all users attached to that film. It can be summarized like this 
+It iterates through all the users and builds a delta vector. This is made up of the taste scores of a user - the taste score of a film. The input is only for users that have watched a film. It then divides the vector by the number of users because it wants to find an average change for the film. It does this for all users attached to that film. It can be summarized like this
+
 $$
 \vec{\Delta} = \sum^{n}_{i = 1} \frac{\vec{f} - \vec{u}_i}{n}
 $$
