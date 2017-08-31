@@ -41,22 +41,24 @@ OFMutableArray *users; //   This is an array that holds all of the users
 ElasticSearch *ES;    //    This is object that deals with elastic search operations
 OFAutoreleasePool *pool; // This is an objective c thing that (I think) makes unused objects free their memory (using reference counting)
 SEL sel_getObject; // See ThingsTooLongForTheComments.md
-IMP imp_getObject;
-unsigned int ESFilmTracker;
-unsigned int ESUserTracker;
+IMP imp_getObject; // This is to optimise the commonly used [OF(Mutable)Array objectAtIndex] call
+unsigned int ESFilmTracker; // This is used to track how many films have been added to ES
+unsigned int ESUserTracker; // Same but for Users
 
 EXPORT int initFilmML() {
-    if (!initialised) {
+    if (!initialised) { // Check to see if initalised (variable found in commonTypes.h)
         printf("Init DLL\n");
+        // Instanciate objects and set default variables (in the scope of main.m)
         pool = [[OFAutoreleasePool alloc] init];
         ES = [[ElasticSearch alloc] init];
         films = [[OFMutableArray alloc] init];
         users = [[OFMutableArray alloc] init];
         nextFilmID = 0;
         nextUserID = 0;
+        // Set up SEL IMP optimisation
         sel_getObject = @selector(objectAtIndex:);
         imp_getObject = [OFMutableArray methodForSelector:sel_getObject];
-        initialised = 1;
+        initialised = 1; // Make sure the function can only be called once.
         ESFilmTracker = 0;
         ESUserTracker = 0;
     }
@@ -64,7 +66,7 @@ EXPORT int initFilmML() {
 }
 
 EXPORT void onExit() {
-    [pool drain];
+    [pool drain]; // Free any objects still around
 }
 
 EXPORT int addFilm(const char *filmName, FilmType defaultFilmType) {
@@ -85,17 +87,18 @@ EXPORT int addUser() {
 EXPORT void cleanUpUsers() {
     printf("Cleaning up users\n");
     User *temp;// = [[User alloc] init];
-    SEL sel_daysSince = @selector(daysSinceInit);
+    SEL sel_daysSince = @selector(daysSinceInit); // Optimising for loop - [User daysSinceInit]
     IMP imp_getDays = [User methodForSelector:sel_daysSince];
     //[temp release];
-    for (int i = 0; i < nextUserID; i++) {
+    for (int i = 0; i < nextUserID; i++) { // Look at all users
         temp = imp_getObject(users, sel_getObject, i);
         if ((id)temp != [OFNull null]){
-            if ((int)imp_getDays(temp, sel_daysSince) > userLife) {
+            if ((int)imp_getDays(temp, sel_daysSince) > userLife) { // If they are older than the required number of days
                 for (int j = 0; j < nextFilmID; j++) {
-                    [(Film*)imp_getObject(films, sel_getObject, j) removeUserView: temp];
+                    [(Film*)imp_getObject(films, sel_getObject, j) removeUserView: temp]; // Remove the connections they have with films
                 }
-                [users replaceObjectAtIndex:i withObject:[OFNull null]];
+                [users replaceObjectAtIndex:i withObject:[OFNull null]]; // Remove object from array without disrupting ID Index relationship
+                [temp release]; // memory managment
             }
         }
         
@@ -107,24 +110,27 @@ EXPORT int dllTest() {
     return 0;
 }
 
-EXPORT int __stdcall setFilmLearningMomentum(float f) {
+/////////////////////////////////////////////////////////////////
+//                          SETTERS                           ///
+/////////////////////////////////////////////////////////////////
+EXPORT int setFilmLearningMomentum(float f) {
     if (f > 1) { return 1; }
     filmLearningMomentum = f;
     return 0;
 }
 
-EXPORT int __stdcall setUserLearningMomentum(float f) {
+EXPORT int setUserLearningMomentum(float f) {
     if (f > 1) { return 1; }
     userLearningMomentum = f;
     return 0;
 }
 
-EXPORT int __stdcall setFilmLearningRate(float f) {
+EXPORT int setFilmLearningRate(float f) {
     if (f > 1) { return 1; }
     filmLearningRate = f;
     return 0;
 }
-EXPORT int __stdcall setUserLearningRate(float f) {
+EXPORT int setUserLearningRate(float f) {
     if (f > 1) { return 1; }
     userLearningRate = f;
     return 0;
@@ -139,26 +145,27 @@ EXPORT void setUserLife(unsigned int l) {
 }
 
 EXPORT void registerFilmView(unsigned int userID, unsigned int filmID) {
-    Film *film = [films objectAtIndex:filmID];
-    User *user = [users objectAtIndex:userID];
+    Film *film = (Film*) imp_getObject(films, sel_getObject, filmID); // [films objectAtIndex:filmID]
+    User *user = (User*) imp_getObject(users, sel_getObject, userID); // [users objectAtIndex:userID];
     [film registerViewFromUser:user];
     [user addFilmToWatched:film];
 }
 
-EXPORT void __stdcall triggerfullSystemML() {
-    SEL sel_getObject = @selector(objectAtIndex:);
-    IMP imp_getObject = [OFMutableArray methodForSelector:sel_getObject];
+EXPORT void triggerfullSystemML() {
     SEL sel_runML = @selector(runML);
     IMP imp_runML = [Film methodForSelector:sel_runML];
     for (int i = 0; i < nextFilmID; i++){
+        // Does the maths to find all of the Delta functions apploy them with momentum (see README.md)
         imp_runML((Film*)imp_getObject(films, sel_getObject, i), sel_runML);
     }
+    // Define variables used in loops
     unsigned int *finalUserFilmArray;
+    unsigned int numberOfUnseenFilms;
     Film *filmToTest;
     User *currentUser;
     finalUserFilmArray = malloc(sizeof(unsigned int) * numberOfFilmSuggestions);
 
-
+    // Setup loads of SEL IMP optimisations
     SEL sel_filmNumber = @selector(getNumberOfWatchedFilms);
     IMP imp_filmNUmber = [User methodForSelector:sel_filmNumber];
     SEL sel_films = @selector(getWatchedFilms);
@@ -168,27 +175,27 @@ EXPORT void __stdcall triggerfullSystemML() {
     SEL sel_getMLData = @selector(getMLType);
     IMP imp_getMLDataFilm = [Film methodForSelector:sel_getMLData];
     IMP imp_getMLDataUser = [User methodForSelector:sel_getMLData];
-    unsigned int numberOfUnseenFilms;
-    for (unsigned int i = 0; i < nextUserID; i++) {
+
+    for (unsigned int i = 0; i < nextUserID; i++) { // All explained in ThingsTooLongForTheComments.md
         currentUser = (User*)imp_getObject(users, sel_getObject, i);
-        numberOfUnseenFilms = nextFilmID - (unsigned int)imp_filmNUmber(currentUser, sel_filmNumber);
-        BTree *tree = malloc(sizeof(BTree));
-        MLType* userData = (MLType*)imp_getMLDataUser(currentUser, sel_getMLData);
-        MLType* filmData = (MLType*)imp_getMLDataFilm(filmToTest, sel_getMLData);
-        for (unsigned int j = 0; j < nextFilmID; j++) {
-                filmToTest = (Film*)imp_getObject(films, sel_getObject, j);
-            if ((bool)imp_contains((OFMutableArray*)imp_films(currentUser, sel_films), sel_contains, filmToTest)) {
-                addToTree(tree,
-                          compatabilityFunction(userData, filmData),
-                          j);
+        if ((id)currentUser != [OFNull null]) {
+            numberOfUnseenFilms = nextFilmID - (unsigned int)imp_filmNUmber(currentUser, sel_filmNumber);
+            BTree *tree = NULL;
+            MLType* userData = (MLType*)imp_getMLDataUser(currentUser, sel_getMLData);
+            MLType* filmData = (MLType*)imp_getMLDataFilm(filmToTest, sel_getMLData);
+            for (unsigned int j = 0; j < nextFilmID; j++) {
+                    filmToTest = (Film*)imp_getObject(films, sel_getObject, j);
+                if (!(bool)imp_contains((OFMutableArray*)imp_films(currentUser, sel_films), sel_contains, filmToTest)) {
+                    addToTree(tree, compatabilityFunction(userData, filmData), j);
+                }
             }
+            topN(numberOfFilmSuggestions, tree, &finalUserFilmArray);
+            if (userData->specific.suggestedFilms == NULL) {
+                userData->specific.suggestedFilms = malloc(sizeof(unsigned int) * numberOfFilmSuggestions);
+            }
+            memcpy(userData->specific.suggestedFilms, finalUserFilmArray, sizeof(unsigned int) * numberOfFilmSuggestions);
+            deleteTree(tree);
         }
-        topN(numberOfFilmSuggestions, tree, &finalUserFilmArray);
-        if (userData->specific.suggestedFilms == NULL) {
-            userData->specific.suggestedFilms = malloc(sizeof(unsigned int) * numberOfFilmSuggestions);
-        }
-        memcpy(userData->specific.suggestedFilms, finalUserFilmArray, sizeof(unsigned int) * numberOfFilmSuggestions);
-        deleteTree(tree);
     }
 }
 

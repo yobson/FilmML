@@ -1,6 +1,6 @@
 # Things too long for comments
 
-In here I will be documenting anything too long to put as a comment in the actual code.
+In here I will be documenting anything too long to put as a comment in the actual code. If you want to view the maths in this, please get [Github mathjax extention](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima) and view this document [here](https://github.com/yobson/FilmML/blob/master/ThingsTooLongForTheComments.md).
 
 ## SEL and IMP
 
@@ -23,3 +23,19 @@ id (*IMP)(id, SEL, ...)
 > This data type is a pointer to the start of the function that implements the method. This function uses standard C calling conventions as implemented for the current CPU architecture. The first argument is a pointer to `self` (that is, the memory for the particular instance of this class, or, for a class method, a pointer to the metaclass). The second argument is the method selector. The method arguments follow.
 
 So by using a SEL and IMP, I can make essentially a pointer to a C function (of return type id). When I call the IMP, it executes without having to faff around funding the code to run. This means if I have a loop that calls a method in an objc object repeatedly, it is far faster to use an IMP and SEL.
+
+## The loops in triggerfullSystemML()
+
+This explains lines 179-199 in main.m
+
+This is the most intensive part of the program and probably needs optimizing massively. It is designed to run and compatibility function for each user and film, find the top n films for each user and add it to the user's suggested film list. This is why a user is killed off after a few days, this is a function $f^u$ complexity. First variables are assigned to make the code more useable and an empty binary is created:
+
+```objective-c
+currentUser = (User*)imp_getObject(users, sel_getObject, i);
+        numberOfUnseenFilms = nextFilmID - (unsigned int)imp_filmNUmber(currentUser, sel_filmNumber);
+        BTree *tree = NULL;
+        MLType* userData = (MLType*)imp_getMLDataUser(currentUser, sel_getMLData);
+        MLType* filmData = (MLType*)imp_getMLDataFilm(filmToTest, sel_getMLData);
+```
+
+Next, it cycles through all the films and runs another loop for each. In this loop, we see if the a user has seen the given film, if they haven't we apply the compatibility function to both and add it's ID to a binary tree. By adding it to a binary tree, we don't have to order the list after by compatibility score, it is already ordered. Once this is done, we then call ``` void topN(...); ```. This should get the top N IDs in the binary tree and pop them in an array that is passed by reference to the function. We finally add this to the user's film suggestion list and delete the tree. The next user in the list is then used.
