@@ -46,7 +46,7 @@
 
 -(void) setCustomID:(unsigned int) i { filmID = i; }
 -(void)  setDefaultType:(FilmType) t { defaultType = t; }
--(float) getDeafultType { return defaultType; }
+-(int) getDeafultType { return (int)defaultType; }
 -(float) getLevelOf:(FilmType) t { return mlData.tasteScores[t]; }
 -(float) getTasteScoreFor:(FilmType) t { return mlData.tasteScores[t]; }
 -(MLType*) getMLType { return &mlData; }

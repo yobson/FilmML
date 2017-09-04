@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Collections;
+using System.Timers;
 
 namespace FilmML
 {
@@ -38,7 +40,7 @@ namespace FilmML
         [DllImport(DllName)]
         public static extern void onExit();
         [DllImport(DllName)]
-        public static extern int addFilm(string filmName, uint defaultFilmType);
+        public static extern int addFilm(string filmName, uint defaultFilmType, int alreadyInES);
         [DllImport(DllName)]
         public static extern int addUser();
         [DllImport(DllName)]
@@ -75,8 +77,18 @@ namespace FilmML
 
     }
 
+    public struct ViewData {
+        public uint FilmID;
+        public uint UserID;
+    };
+
     public class FilmML
     {
+
+        Queue<ViewData> Watches = new Queue<ViewData>();
+        Timer t = new Timer();
+
+
         public void SetupFilmML(
                 uint UserLife = 5,
                 float UserLearningMomentum = 0.2f,
@@ -85,7 +97,8 @@ namespace FilmML
                 float FilmLearningRate = 0.1f,
                 uint NumberOfFilmSugestions = 10,
                 string ElasticSearchURL = "127.0.0.1:9200",
-                string ElasticSearchIndex = "filmml"
+                string ElasticSearchIndex = "filmml",
+                double UpdateInterval = 10000
             )
         {
             DLL.initFilmML();
@@ -99,17 +112,21 @@ namespace FilmML
             {
                 Console.WriteLine("Something went wrong connecting to elastic search!");
             }
+            t.AutoReset = true;
+            t.Interval = UpdateInterval;
+            t.Elapsed += SyncViews;
+            t.Start();
         }
 
-        public void AddFilm(Film f, bool sync = true)
+        public void AddFilm(Film f, bool sync = true, bool inEs = true)
         {
-            f.ID = DLL.addFilm(f.Name, (uint)f.DefaultType);
+            f.ID = DLL.addFilm(f.Name, (uint)f.DefaultType, inEs ? 1 : 0);
             if (sync) { DLL.addFilmsToElasticSearch(); }
         }
 
-        public int AddFilms(List<Film> f)
+        public int AddFilms(List<Film> f, bool alreadyInEs = true)
         {
-            f.ForEach(a => AddFilm(a, false));
+            f.ForEach(a => AddFilm(a, false, alreadyInEs));
             return DLL.addFilmsToElasticSearch();
         }
 
@@ -125,7 +142,30 @@ namespace FilmML
             return DLL.addUsersToElasticSearch();
         }
 
-        public int test()
+        public void AddView(ViewData viewData)
+        {
+            Watches.Enqueue(viewData);
+        }
+
+        private void SyncViews(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Console.WriteLine("Adding " + Watches.Count + " views to ML database");
+            while (Watches.Count > 0)
+            {
+                ViewData d = Watches.Dequeue();
+                DLL.registerFilmView(d.UserID, d.FilmID);
+            }
+            DLL.triggerfullSystemML();
+            DLL.elasticSearchUpdate();
+        }
+
+        public void RefreshUserDb()
+        {
+            DLL.cleanUpUsers();
+            DLL.elasticSearchClean();
+        }
+
+        public int Test()
         {
             Console.WriteLine("Hello From FilmMLCS");
             return DLL.dllTest();

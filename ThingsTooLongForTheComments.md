@@ -1,6 +1,6 @@
 # Things too long for comments
 
-In here I will be documenting anything too long to put as a comment in the actual code. If you want to view the maths in this, please get [Github mathjax extention](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima) and view this document [here](https://github.com/yobson/FilmML/blob/master/ThingsTooLongForTheComments.md).
+In here I will be documenting anything too long to put as a comment in the actual code. If you want to view the maths in this, please get [Github mathjax extention](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima) and view this document [here](https://github.com/yobson/FilmML/blob/master/ThingsTooLongForTheComments.md) or more preferable, open using [Typora](https://typora.io/).
 
 ## SEL and IMP
 
@@ -93,17 +93,40 @@ for (unsigned int i = 0; i < userCount; i++) {
 ```
 
 It iterates through all the users and builds a delta vector. This is made up of the taste scores of a user - the taste score of a film. The input is only for users that have watched a film. It then divides the vector by the number of users because it wants to find an average change for the film. It does this for all users attached to that film. It can be summarized like this 
+
 $$
 \vec{\Delta} = \sum^{n}_{i = 1} \frac{\vec{f} - \vec{u}_i}{n}
 $$
+
 The next for loop simply applies the delta vector to the film taste score vector using the learning function which can be defined as:
+
 $$
 \vec{f}_{t+1} = \vec{f}_{t} + \vec{\Delta} \cdot v \cdot (1-\eta) + \eta \cdot \vec{f}_{t-1} 
 $$
+
 where
 
+- $\vec{f}$ is the film taste score vector at a given $t$ point in time
+- $\vec{\Delta}$ Is the delta taste score vector
+- $v$ is the learning velocity (higher is faster learning, but less accurate)
+- $\eta$ is the momentum, how much the previous change influences the next.
+
+
+The final for loop applies a similar function for the each user (the outer for loop goes though the users, the inner applies the ML function).
+
+### The Compatibility Function
+
+At the moment, it is primitively boring. It can be written like this:
+
+$$
+c  =\vec{u} \cdot \vec{f} \cdot n
+$$
+
+where
+
+- $c$ is the compatibility score
+- $\vec{u}$ is the user taste score vector
 - $\vec{f}$ is the film taste score vector
-- ​
+- $n$ is the number of unique views for the given film
 
-
-
+However, the plan is to use the number of views in a more spicy way, but this will happen after testing.

@@ -1,4 +1,4 @@
-typedef enum {horror, crime, love, romCom} FilmType;
+typedef enum {horror, crime, love, romCom} FilmType; // Tye film types. This has to be the same as the enum in c#!!!!
 const unsigned int numberOfFilmTypes = 4;
 float filmLearningRate = 0.1;
 float userLearningRate = 0.3;

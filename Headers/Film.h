@@ -20,7 +20,7 @@
 -(void) setCustomID:(unsigned int) i;
 -(void) setDefaultType:(FilmType) t;
 -(void) setTasteScoreOf:(FilmType) t to:(float) f;
--(float) getDeafultType;
+-(int) getDeafultType;
 -(float) getTasteScoreFor:(FilmType) t;
 -(MLType*) getMLType;
 
